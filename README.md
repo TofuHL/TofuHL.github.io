@@ -56,7 +56,8 @@ src/
   layouts/            BaseLayout.astro (head, schema.org, header/footer, cookie banner)
   templates/          One Astro component per page (e.g. HomePage.astro)
   pages/{en,sv,uk}/   Thin per-locale route files that render the templates above
-scripts/              Build-time generator (CSV exports)
+scripts/              Build-time generator (CSV exports) + record-donation.mjs
+serverless/           Example webhook relay (not deployed) — see Live fundraising counter
 public/               Static assets, favicon, robots.txt, generated /data; put real reports in public/reports/
 ```
 
@@ -80,8 +81,7 @@ donation page.
 
 | What | File | Ships as |
 |---|---|---|
-| Live fundraising bar (total raised, goal, donor count, campaign dates) | `src/data/fundraising.json` | zero/null — shows "hasn't launched yet" |
-| Homepage impact counters (children supported, meals, kits, shelters) | `src/data/impact-stats.json` | zero, no source |
+| Live fundraising counter (total raised, donor count, optional goal/deadline) | `src/data/fundraising.json` | zero — see *Live fundraising counter* below, don't edit `totalRaised`/`donorCount` by hand once real donations exist |
 | "How your donation helps" amount tiers | `src/data/how-it-helps.json` | example amounts (forward-looking, not a claim of past spend) |
 | Cumulative funds raised chart | `src/data/chart-funds-over-time.json` | empty — chart shows "no data yet" |
 | Allocation of funds (donut chart) | `src/data/chart-allocation.json` | zero percentages — **must sum to 100 once real** |
@@ -96,12 +96,56 @@ donation page.
 Every figure that has a `date`/`asOf`/`source` field must be shown on the
 page with that citation once populated — don't add a number without one.
 
-**In production, replace the manual-edit workflow above with a scheduled
-job** (e.g. a GitHub Action on a cron trigger, or a webhook from your
-payment processor / CRM) that regenerates `fundraising.json` and
-`chart-*.json` automatically, so the "live" fundraising bar is actually
-live. As shipped, these files are edited by hand or by a script you point
-at your donation platform's reporting API.
+**In production, replace the manual-edit workflow above for the chart data**
+with a scheduled job (e.g. a GitHub Action on a cron trigger, or a script
+you run periodically) that regenerates `chart-*.json` from your donation
+platform's reporting API. The fundraising counter has its own, automatic
+mechanism — see below.
+
+### Live fundraising counter
+
+The homepage and Impact page show a single running total — **"X SEK
+raised, Y donors"** — sourced from `totalRaised` and `donorCount` in
+`src/data/fundraising.json`. Both start at `0`. There is exactly one
+correct way to change them: a real, completed donation, recorded by the
+automation below. **Never** hand-edit these two fields to a bigger number,
+and never fake the increment client-side (e.g. in `localStorage`) — either
+would show a number nobody actually gave.
+
+How a donation reaches the counter:
+
+1. A donor completes a real payment through whichever processor you wire
+   into `DonationPanel.astro` (Stripe, PayPal, Swish, …).
+2. That processor's webhook fires. `serverless/stripe-webhook-example.mjs`
+   is a template for a small function (deploy it to Cloudflare
+   Workers/Vercel/Netlify/anywhere that runs Node+Fetch) that verifies the
+   webhook, reads the **exact amount actually charged**, and calls
+   GitHub's `repository_dispatch` API with that amount.
+3. `.github/workflows/record-donation.yml` receives that dispatch and runs
+   `scripts/record-donation.mjs`, which adds the exact amount to
+   `totalRaised`, increments `donorCount` by 1, and commits the change.
+4. That commit lands on `main`, which triggers `deploy.yml` and republishes
+   the site with the new total.
+
+End-to-end latency is a couple of minutes (two Actions runs), not instant —
+an honest trade-off for a static site with no database. The one piece you
+still have to build is step 2 (deploying the webhook relay somewhere and
+connecting it to your chosen payment processor's webhooks); everything from
+step 3 onward already works — you can test it right now without any of that
+by firing the dispatch yourself:
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer <a GitHub PAT with Contents: read/write on this repo>" \
+  -H "Accept: application/vnd.github+json" \
+  https://api.github.com/repos/<owner>/<repo>/dispatches \
+  -d '{"event_type":"donation-received","client_payload":{"amount":250}}'
+```
+
+If you'd rather set an optional fundraising goal and deadline, fill in
+`goal`, `campaignStart` and `campaignEnd` in `fundraising.json` — the
+counter will then also show a progress bar and days remaining. Leave
+`goal` at `0` to just show the running total with no target.
 
 ### Text that lives in translation files, not data files
 
@@ -200,7 +244,10 @@ there is no backend in this repo by design (it's a static site):
    collects amount/frequency/payment-method choices and submits a `GET` to
    `/<locale>/donate/confirmation/` for demonstration. Wire its `<form>`
    submit to real Stripe Checkout / PayPal / Apple Pay / Google Pay / Swish
-   integrations — never handle card data directly in this codebase.
+   integrations — never handle card data directly in this codebase. Once
+   payments are real, deploy `serverless/stripe-webhook-example.mjs` (or
+   adapt it to your processor) so completed donations also update the
+   live fundraising counter — see *Live fundraising counter* above.
 2. **Contact form.** `src/templates/ContactPage.astro` prevents default
    submission and shows a local confirmation message. Point it at a real
    backend (Formspree, a serverless function, your CRM's inbound API, …).

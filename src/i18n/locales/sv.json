@@ -74,16 +74,7 @@
     "goalLabel": "mål",
     "donorsLabel": "givare",
     "daysLabel": "dagar kvar av denna insamlingsperiod",
-    "asOf": "Siffror uppdaterade",
-    "notLaunched": "Insamlingen har inte startat ännu — aktuella siffror visas här när en kampanj pågår."
-  },
-  "impact": {
-    "eyebrow": "Vår effekt",
-    "title": "Vad ert stöd har finansierat hittills",
-    "children": "Barn som fått stöd",
-    "meals": "Levererade måltider",
-    "kits": "Utdelade skolpaket",
-    "shelters": "Vinteranpassade skyddsrum"
+    "asOf": "Siffror uppdaterade"
   },
   "help": {
     "eyebrow": "Så hjälper din gåva",

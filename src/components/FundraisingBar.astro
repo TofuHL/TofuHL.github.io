@@ -9,9 +9,10 @@ const { locale } = Astro.props;
 const dict = getDict(locale);
 
 const { totalRaised, goal, donorCount, campaignEnd, asOf, currency } = fundraising;
-const hasCampaign = Boolean(goal && goal > 0 && campaignEnd && asOf);
-const percent = hasCampaign ? Math.min(100, Math.round((totalRaised / goal) * 100)) : 0;
-const daysRemaining = hasCampaign
+const hasGoal = Boolean(goal && goal > 0);
+const percent = hasGoal ? Math.min(100, Math.round((totalRaised / goal) * 100)) : 0;
+const hasDeadline = Boolean(hasGoal && campaignEnd && asOf);
+const daysRemaining = hasDeadline
   ? Math.max(0, Math.ceil((new Date(campaignEnd as unknown as string).getTime() - new Date(asOf as unknown as string).getTime()) / (1000 * 60 * 60 * 24)))
   : 0;
 const formatter = new Intl.NumberFormat(locale === 'uk' ? 'uk-UA' : locale === 'sv' ? 'sv-SE' : 'en-GB');
@@ -20,35 +21,39 @@ const formatter = new Intl.NumberFormat(locale === 'uk' ? 'uk-UA' : locale === '
 <section class="fundraising-bar fade-in-up" aria-labelledby="fundraising-bar-title">
   <div class="container">
     <h2 id="fundraising-bar-title" class="visually-hidden">{dict.fundraisingBar.title}</h2>
-    {hasCampaign ? (
-      <div class="fundraising-bar__card">
+    <div class="fundraising-bar__card">
+      <div class="fundraising-bar__raised">
+        <span class="fundraising-bar__value" data-countup={totalRaised}>{formatter.format(totalRaised)}</span>
+        <span class="fundraising-bar__unit">{currency}</span>
+        <span class="fundraising-bar__label text-secondary">{dict.fundraisingBar.raisedLabel}</span>
+      </div>
+
+      {hasGoal && (
         <div class="fundraising-bar__track" role="img" aria-label={`${percent}% ${dict.common.of} ${dict.common.goal}`}>
           <div class="fundraising-bar__fill" style={{ width: `${percent}%` }}></div>
         </div>
-        <div class="fundraising-bar__stats">
+      )}
+      {hasGoal && (
+        <p class="fundraising-bar__goal text-secondary">
+          {dict.common.of} {formatter.format(goal)} {currency} {dict.fundraisingBar.goalLabel}
+        </p>
+      )}
+
+      <div class="fundraising-bar__stats">
+        <div class="fundraising-bar__stat">
+          <span class="fundraising-bar__stat-value" data-countup={donorCount}>{formatter.format(donorCount)}</span>
+          <span class="fundraising-bar__label text-secondary">{dict.fundraisingBar.donorsLabel}</span>
+        </div>
+        {hasDeadline && (
           <div class="fundraising-bar__stat">
-            <span class="fundraising-bar__value" data-countup={totalRaised}>{formatter.format(totalRaised)}</span>
-            <span class="fundraising-bar__unit">{currency}</span>
-            <span class="fundraising-bar__label text-secondary">
-              {dict.fundraisingBar.raisedLabel} {dict.common.of} {formatter.format(goal)} {currency} {dict.fundraisingBar.goalLabel}
-            </span>
-          </div>
-          <div class="fundraising-bar__stat">
-            <span class="fundraising-bar__value" data-countup={donorCount}>{formatter.format(donorCount)}</span>
-            <span class="fundraising-bar__label text-secondary">{dict.fundraisingBar.donorsLabel}</span>
-          </div>
-          <div class="fundraising-bar__stat">
-            <span class="fundraising-bar__value" data-countup={daysRemaining}>{formatter.format(daysRemaining)}</span>
+            <span class="fundraising-bar__stat-value" data-countup={daysRemaining}>{formatter.format(daysRemaining)}</span>
             <span class="fundraising-bar__label text-secondary">{dict.fundraisingBar.daysLabel}</span>
           </div>
-        </div>
-        <p class="fundraising-bar__asof text-secondary">{dict.fundraisingBar.asOf}: {asOf}</p>
+        )}
       </div>
-    ) : (
-      <div class="fundraising-bar__card fundraising-bar__card--empty">
-        <p class="text-secondary">{dict.fundraisingBar.notLaunched}</p>
-      </div>
-    )}
+
+      {asOf && <p class="fundraising-bar__asof text-secondary">{dict.fundraisingBar.asOf}: {asOf}</p>}
+    </div>
   </div>
 </section>
 
@@ -59,13 +64,28 @@ const formatter = new Intl.NumberFormat(locale === 'uk' ? 'uk-UA' : locale === '
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     padding: 32px;
+    text-align: center;
   }
+  .fundraising-bar__raised { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .fundraising-bar__value {
+    font-family: var(--font-serif);
+    font-size: clamp(40px, 7vw, 64px);
+    font-weight: 600;
+    line-height: 1;
+    color: var(--color-azure);
+  }
+  .fundraising-bar__unit { font-size: 15px; color: var(--color-text-secondary); }
+  .fundraising-bar__raised .fundraising-bar__label { font-size: 14.5px; margin-top: 4px; }
+
   .fundraising-bar__track {
     height: 12px;
     border-radius: 999px;
     background: var(--color-border);
     overflow: hidden;
-    margin-bottom: 28px;
+    margin: 24px 0 8px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
   }
   .fundraising-bar__fill {
     height: 100%;
@@ -73,26 +93,27 @@ const formatter = new Intl.NumberFormat(locale === 'uk' ? 'uk-UA' : locale === '
     border-radius: 999px;
     transition: width 900ms ease;
   }
+  .fundraising-bar__goal { font-size: 13.5px; margin: 0 0 8px; }
+
   .fundraising-bar__stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 20px;
+    flex-wrap: wrap;
   }
-  .fundraising-bar__stat { display: flex; flex-direction: column; }
-  .fundraising-bar__value {
+  .fundraising-bar__stat { display: flex; flex-direction: column; align-items: center; }
+  .fundraising-bar__stat-value {
     font-family: var(--font-serif);
-    font-size: clamp(28px, 4vw, 38px);
+    font-size: clamp(22px, 3vw, 28px);
     font-weight: 600;
     line-height: 1;
   }
-  .fundraising-bar__unit { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
   .fundraising-bar__label { font-size: 13.5px; margin-top: 6px; }
   .fundraising-bar__asof { margin: 20px 0 0; font-size: 12px; }
-  .fundraising-bar__card--empty { text-align: center; padding: 40px 24px; }
-  .fundraising-bar__card--empty p { margin: 0; }
 
   @media (max-width: 640px) {
-    .fundraising-bar__stats { grid-template-columns: 1fr; gap: 18px; }
     .fundraising-bar__card { padding: 24px; }
+    .fundraising-bar__stats { gap: 24px; }
   }
 </style>

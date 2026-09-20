@@ -74,16 +74,7 @@
     "goalLabel": "goal",
     "donorsLabel": "donors",
     "daysLabel": "days left in this campaign period",
-    "asOf": "Figures updated",
-    "notLaunched": "Fundraising hasn't launched yet — live totals will appear here once a campaign is running."
-  },
-  "impact": {
-    "eyebrow": "Our impact",
-    "title": "What your support has funded so far",
-    "children": "Children supported",
-    "meals": "Meals delivered",
-    "kits": "School kits distributed",
-    "shelters": "Shelters weatherproofed"
+    "asOf": "Figures updated"
   },
   "help": {
     "eyebrow": "How your donation helps",

@@ -1,0 +1,43 @@
+name: Record donation
+
+# Triggered by a repository_dispatch call from a payment webhook (see the
+# "Live fundraising counter" section of the README). This is the only
+# automated path that changes the published totalRaised / donorCount —
+# it adds the exact amount from a real, completed payment and nothing else.
+
+on:
+  repository_dispatch:
+    types: [donation-received]
+
+permissions:
+  contents: write
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Record donation amount
+        env:
+          DONATION_AMOUNT: ${{ github.event.client_payload.amount }}
+        run: node scripts/record-donation.mjs
+
+      - name: Commit and push updated total
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/fundraising.json
+          git commit -m "Record donation: +${{ github.event.client_payload.amount }} SEK"
+          git push
+
+  # Pushing to main above triggers deploy.yml automatically, which rebuilds
+  # and republishes the site with the new total — no separate step needed.
