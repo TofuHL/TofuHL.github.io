@@ -1,0 +1,15 @@
+---
+import { getCollection } from 'astro:content';
+import StoryPage from '../../../templates/StoryPage.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('stories', ({ id }) => id.startsWith('en/'));
+  return entries.map((entry) => ({
+    params: { slug: entry.slug.replace('en/', '') },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+---
+<StoryPage locale="en" entry={entry} />

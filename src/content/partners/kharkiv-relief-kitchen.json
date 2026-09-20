@@ -1,0 +1,10 @@
+{
+  "name": "Kharkiv Relief Kitchen Network",
+  "description": {
+    "en": "Community-run kitchens preparing and distributing daily meals in Kharkiv and surrounding districts.",
+    "sv": "Gemenskapsdrivna kök som lagar och delar ut dagliga måltider i Charkiv och kringliggande distrikt.",
+    "uk": "Мережа громадських кухонь, що готують і роздають щоденні страви у Харкові та навколишніх районах."
+  },
+  "url": "https://example.org/kharkiv-relief-kitchen",
+  "kind": "implementation"
+}

@@ -1,0 +1,132 @@
+---
+import { getDict, pick, type Locale } from '../../i18n/ui';
+import data from '../../data/chart-campaign-progress.json';
+
+export interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = getDict(locale);
+const numberFormat = new Intl.NumberFormat(locale === 'uk' ? 'uk-UA' : locale === 'sv' ? 'sv-SE' : 'en-GB');
+
+const campaigns = data.campaigns.map((c) => ({ ...c, name: String(pick(dict, c.nameKey)) }));
+const campaignSummaries = campaigns.map((c) => c.name + ' ' + Math.round((c.raised / c.goal) * 100) + '%');
+const ariaLabel = dict.pages.impact.campaignProgressTitle + ': ' + campaignSummaries.join(', ') + '.';
+---
+
+<div class="chart-block">
+  <h3>{dict.pages.impact.campaignProgressTitle}</h3>
+  <div class="chart-block__canvas-wrap chart-block__canvas-wrap--tall">
+    <canvas
+      id="chart-campaign-progress"
+      tabindex="0"
+      role="img"
+      aria-label={ariaLabel}
+      data-labels={JSON.stringify(campaigns.map((c) => c.name))}
+      data-raised={JSON.stringify(campaigns.map((c) => c.raised))}
+      data-goal={JSON.stringify(campaigns.map((c) => c.goal))}
+      data-currency={data.currency}
+    ></canvas>
+  </div>
+  <p class="chart-block__meta text-secondary">{dict.common.updated} {data.asOf}</p>
+
+  <details class="chart-table">
+    <summary>{dict.common.viewDataTable}</summary>
+    <table class="data-table">
+      <caption class="visually-hidden">{dict.pages.impact.campaignProgressTitle}</caption>
+      <thead>
+        <tr>
+          <th scope="col">{dict.common.campaign}</th>
+          <th scope="col">{dict.common.raised} ({data.currency})</th>
+          <th scope="col">{dict.common.goal} ({data.currency})</th>
+          <th scope="col">%</th>
+        </tr>
+      </thead>
+      <tbody>
+        {campaigns.map((c) => (
+          <tr>
+            <th scope="row">{c.name}</th>
+            <td>{numberFormat.format(c.raised)}</td>
+            <td>{numberFormat.format(c.goal)}</td>
+            <td>{Math.round((c.raised / c.goal) * 100)}%</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </details>
+  <a class="csv-link" href="/data/campaign-progress.csv" download>{dict.common.downloadCsv}</a>
+</div>
+
+<script>
+  import Chart from 'chart.js/auto';
+  import { chartPalette, prefersReducedMotion } from './palette';
+
+  const canvas = document.getElementById('chart-campaign-progress') as HTMLCanvasElement | null;
+  if (canvas) {
+    const labels = JSON.parse(canvas.dataset.labels ?? '[]') as string[];
+    const raised = JSON.parse(canvas.dataset.raised ?? '[]') as number[];
+    const goal = JSON.parse(canvas.dataset.goal ?? '[]') as number[];
+    const currency = canvas.dataset.currency ?? '';
+    const { colors, ink } = chartPalette();
+
+    new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Goal',
+            data: goal,
+            backgroundColor: ink.grid,
+            barPercentage: 0.55,
+            categoryPercentage: 0.7,
+            order: 2,
+            borderRadius: 4,
+            grouped: false,
+          },
+          {
+            label: 'Raised',
+            data: raised,
+            backgroundColor: colors[0],
+            barPercentage: 0.55,
+            categoryPercentage: 0.7,
+            order: 1,
+            borderRadius: 4,
+            grouped: false,
+          },
+        ],
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: prefersReducedMotion() ? false : { duration: 700 },
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { color: ink.secondary, usePointStyle: true, boxWidth: 8 },
+          },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${ctx.dataset.label}: ${Number(ctx.raw).toLocaleString()} ${currency}`,
+            },
+          },
+        },
+        scales: {
+          x: {
+            ticks: { color: ink.secondary, callback: (val) => Number(val).toLocaleString() },
+            grid: { color: ink.grid },
+          },
+          y: {
+            ticks: { color: ink.primary },
+            grid: { display: false },
+          },
+        },
+      },
+    });
+  }
+</script>
+
+<style>
+  .chart-block__canvas-wrap--tall { height: 260px; }
+</style>

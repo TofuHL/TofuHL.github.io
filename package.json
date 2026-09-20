@@ -1,0 +1,25 @@
+{
+  "name": "samma-farger",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "predev": "node scripts/generate-csv.mjs && node scripts/generate-placeholder-pdfs.mjs",
+    "dev": "astro dev",
+    "start": "astro dev",
+    "prebuild": "node scripts/generate-csv.mjs && node scripts/generate-placeholder-pdfs.mjs",
+    "build": "astro check && astro build",
+    "build:nocheck": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/sitemap": "3.2.1",
+    "@fontsource-variable/inter": "^5.1.1",
+    "@fontsource/source-serif-4": "^5.1.1",
+    "astro": "^4.16.18",
+    "chart.js": "^4.4.7",
+    "typescript": "^5.7.2"
+  }
+}

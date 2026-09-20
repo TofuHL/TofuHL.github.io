@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FundraisingBar from '../components/FundraisingBar.astro';
+import FundsOverTimeChart from '../components/charts/FundsOverTimeChart.astro';
+import AllocationChart from '../components/charts/AllocationChart.astro';
+import CampaignProgressChart from '../components/charts/CampaignProgressChart.astro';
+import ChildrenReachedChart from '../components/charts/ChildrenReachedChart.astro';
+import ClosingCta from '../components/ClosingCta.astro';
+import { getDict, type Locale } from '../i18n/ui';
+
+export interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = getDict(locale);
+const p = dict.pages.impact;
+---
+
+<BaseLayout locale={locale} path="impact" title={p.title} description={p.metaDescription}>
+  <section class="section impact-page__hero">
+    <div class="container">
+      <p class="eyebrow">{p.heroEyebrow}</p>
+      <h1>{p.heroTitle}</h1>
+      <p class="text-secondary impact-page__a11y-note">{p.accessibilityNote}</p>
+    </div>
+  </section>
+
+  <FundraisingBar locale={locale} />
+
+  <section class="section">
+    <div class="container">
+      <FundsOverTimeChart locale={locale} />
+      <AllocationChart locale={locale} />
+      <CampaignProgressChart locale={locale} />
+      <ChildrenReachedChart locale={locale} />
+    </div>
+  </section>
+
+  <ClosingCta locale={locale} />
+</BaseLayout>
+
+<style>
+  .impact-page__hero h1 { max-width: 820px; }
+  .impact-page__a11y-note { max-width: 68ch; margin-top: 12px; }
+</style>

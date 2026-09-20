@@ -1,0 +1,43 @@
+---
+import { getDict, type Locale } from '../i18n/ui';
+import PhotoPlaceholder from './PhotoPlaceholder.astro';
+
+export interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = getDict(locale);
+---
+
+<section class="hero">
+  <div class="container hero__grid">
+    <div class="hero__content">
+      <p class="eyebrow">{dict.hero.eyebrow}</p>
+      <h1>{dict.hero.title}</h1>
+      <p class="hero__subtitle">{dict.hero.subtitle}</p>
+      <div class="hero__actions">
+        <button type="button" class="btn btn-primary" data-open-donation>{dict.hero.donate}</button>
+        <a href="#impact-stats-title" class="btn btn-secondary">{dict.hero.seeImpact}</a>
+      </div>
+    </div>
+    <PhotoPlaceholder caption={dict.hero.photoCaption} ratio="4 / 5" class="hero__photo" />
+  </div>
+</section>
+
+<style>
+  .hero { padding: 56px 0 88px; }
+  .hero__grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .hero__subtitle { font-size: 18px; color: var(--color-text-secondary); max-width: 52ch; margin-top: 16px; }
+  .hero__actions { display: flex; gap: 14px; margin-top: 28px; flex-wrap: wrap; }
+
+  @media (max-width: 900px) {
+    .hero { padding: 32px 0 56px; }
+    .hero__grid { grid-template-columns: 1fr; gap: 32px; }
+    .hero__photo { order: -1; }
+  }
+</style>

@@ -1,0 +1,120 @@
+---
+import { getDict, type Locale } from '../../i18n/ui';
+import data from '../../data/chart-funds-over-time.json';
+
+export interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = getDict(locale);
+
+const numberFormat = new Intl.NumberFormat(locale === 'uk' ? 'uk-UA' : locale === 'sv' ? 'sv-SE' : 'en-GB');
+const monthFormat = new Intl.DateTimeFormat(locale === 'uk' ? 'uk-UA' : locale === 'sv' ? 'sv-SE' : 'en-GB', {
+  year: 'numeric',
+  month: 'short',
+});
+
+const labels = data.months.map((m) => monthFormat.format(new Date(`${m.month}-01T00:00:00`)));
+const values = data.months.map((m) => m.cumulative);
+const first = data.months[0];
+const last = data.months[data.months.length - 1];
+
+const ariaLabel = `${dict.pages.impact.fundsOverTimeTitle}: ${dict.common.raised} ${numberFormat.format(first.cumulative)} ${data.currency} ${monthFormat.format(new Date(first.month + '-01'))} → ${numberFormat.format(last.cumulative)} ${data.currency} ${monthFormat.format(new Date(last.month + '-01'))}.`;
+---
+
+<div class="chart-block">
+  <h3>{dict.pages.impact.fundsOverTimeTitle}</h3>
+  <div class="chart-block__canvas-wrap">
+    <canvas
+      id="chart-funds-over-time"
+      tabindex="0"
+      role="img"
+      aria-label={ariaLabel}
+      data-labels={JSON.stringify(labels)}
+      data-values={JSON.stringify(values)}
+      data-currency={data.currency}
+    ></canvas>
+  </div>
+  <p class="chart-block__meta text-secondary">{dict.common.source}: {data.source} · {dict.common.updated} {data.asOf}</p>
+
+  <details class="chart-table">
+    <summary>{dict.common.viewDataTable}</summary>
+    <table class="data-table">
+      <caption class="visually-hidden">{dict.pages.impact.fundsOverTimeTitle}</caption>
+      <thead>
+        <tr><th scope="col">{dict.common.month}</th><th scope="col">{dict.common.raised} ({data.currency})</th></tr>
+      </thead>
+      <tbody>
+        {data.months.map((m, i) => (
+          <tr><th scope="row">{labels[i]}</th><td>{numberFormat.format(m.cumulative)}</td></tr>
+        ))}
+      </tbody>
+    </table>
+  </details>
+  <a class="csv-link" href="/data/funds-over-time.csv" download>{dict.common.downloadCsv}</a>
+</div>
+
+<script>
+  import Chart from 'chart.js/auto';
+  import { chartPalette, prefersReducedMotion } from './palette';
+
+  const canvas = document.getElementById('chart-funds-over-time') as HTMLCanvasElement | null;
+  if (canvas) {
+    const labels = JSON.parse(canvas.dataset.labels ?? '[]') as string[];
+    const values = JSON.parse(canvas.dataset.values ?? '[]') as number[];
+    const currency = canvas.dataset.currency ?? '';
+    const { colors, ink } = chartPalette();
+
+    new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: currency,
+            data: values,
+            borderColor: colors[0],
+            backgroundColor: `${colors[0]}22`,
+            fill: true,
+            tension: 0.3,
+            pointRadius: 3,
+            pointHoverRadius: 6,
+            pointBackgroundColor: colors[0],
+            borderWidth: 2,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: prefersReducedMotion() ? false : { duration: 700 },
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${Number(ctx.raw).toLocaleString()} ${currency}`,
+            },
+          },
+        },
+        scales: {
+          x: { ticks: { color: ink.secondary }, grid: { display: false } },
+          y: {
+            ticks: {
+              color: ink.secondary,
+              callback: (val) => Number(val).toLocaleString(),
+            },
+            grid: { color: ink.grid },
+          },
+        },
+      },
+    });
+  }
+</script>
+
+<style>
+  .chart-block { margin-bottom: 56px; }
+  .chart-block__canvas-wrap { height: 340px; margin: 20px 0 8px; }
+  .chart-block__meta { font-size: 12.5px; margin: 0 0 4px; }
+  canvas:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 4px; }
+</style>

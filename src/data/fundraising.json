@@ -1,0 +1,10 @@
+{
+  "_comment": "Live fundraising figures. In production this file is replaced by a scheduled fetch from the payment/CRM provider (see README ‘Updating campaign figures’). Never hardcode these numbers into components.",
+  "currency": "SEK",
+  "totalRaised": 4187650,
+  "goal": 6000000,
+  "donorCount": 3142,
+  "campaignStart": "2025-01-01",
+  "campaignEnd": "2026-12-31",
+  "asOf": "2026-09-18"
+}

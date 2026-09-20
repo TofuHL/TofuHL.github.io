@@ -1,0 +1,21 @@
+{
+  "name": "Elin Håkansson",
+  "role": {
+    "en": "Co-founder & Chair",
+    "sv": "Medgrundare & ordförande",
+    "uk": "Співзасновниця та голова правління"
+  },
+  "bio": {
+    "en": "Former humanitarian logistics coordinator with 12 years in the Red Cross network. Started Samma färger from her kitchen table in March 2022.",
+    "sv": "Tidigare logistiksamordnare inom humanitärt arbete med 12 år inom Röda Korset-nätverket. Startade Samma färger vid köksbordet i mars 2022.",
+    "uk": "Колишня координаторка гуманітарної логістики з 12-річним досвідом роботи в мережі Червоного Хреста. Заснувала Samma färger за кухонним столом у березні 2022 року."
+  },
+  "location": "Malmö, Sweden",
+  "photoAlt": {
+    "en": "Portrait of Elin Håkansson, co-founder and chair",
+    "sv": "Porträtt av Elin Håkansson, medgrundare och ordförande",
+    "uk": "Портрет Елін Гоконссон, співзасновниці та голови правління"
+  },
+  "order": 1,
+  "group": "founders"
+}

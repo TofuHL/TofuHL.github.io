@@ -1,0 +1,121 @@
+---
+import { getDict, pick, type Locale } from '../../i18n/ui';
+import data from '../../data/chart-allocation.json';
+
+export interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = getDict(locale);
+
+const segments = data.segments.map((s) => ({ ...s, label: String(pick(dict, s.labelKey)) }));
+const ariaLabel = `${dict.pages.impact.allocationTitle}: ${segments.map((s) => `${s.label} ${s.percent}%`).join(', ')}.`;
+---
+
+<div class="chart-block">
+  <h3>{dict.pages.impact.allocationTitle}</h3>
+  <div class="chart-block__donut-grid">
+    <div class="chart-block__canvas-wrap chart-block__canvas-wrap--donut">
+      <canvas
+        id="chart-allocation"
+        tabindex="0"
+        role="img"
+        aria-label={ariaLabel}
+        data-labels={JSON.stringify(segments.map((s) => s.label))}
+        data-values={JSON.stringify(segments.map((s) => s.percent))}
+      ></canvas>
+    </div>
+    <ul class="chart-block__legend" aria-hidden="true">
+      {segments.map((s, i) => (
+        <li>
+          <span class="chart-block__swatch" data-swatch-index={i}></span>
+          <span class="chart-block__legend-label">{s.label}</span>
+          <span class="chart-block__legend-value">{s.percent}%</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+  <p class="chart-block__meta text-secondary">{dict.common.source}: {data.source} · {dict.common.updated} {data.asOf}</p>
+
+  <details class="chart-table">
+    <summary>{dict.common.viewDataTable}</summary>
+    <table class="data-table">
+      <caption class="visually-hidden">{dict.pages.impact.allocationTitle}</caption>
+      <thead>
+        <tr><th scope="col">{dict.common.category}</th><th scope="col">{dict.common.percent}</th></tr>
+      </thead>
+      <tbody>
+        {segments.map((s) => (
+          <tr><th scope="row">{s.label}</th><td>{s.percent}%</td></tr>
+        ))}
+      </tbody>
+    </table>
+  </details>
+  <a class="csv-link" href="/data/allocation.csv" download>{dict.common.downloadCsv}</a>
+</div>
+
+<script>
+  import Chart from 'chart.js/auto';
+  import { chartPalette, prefersReducedMotion } from './palette';
+
+  const canvas = document.getElementById('chart-allocation') as HTMLCanvasElement | null;
+  if (canvas) {
+    const labels = JSON.parse(canvas.dataset.labels ?? '[]') as string[];
+    const values = JSON.parse(canvas.dataset.values ?? '[]') as number[];
+    const { colors, ink } = chartPalette();
+
+    document.querySelectorAll<HTMLElement>('[data-swatch-index]').forEach((el) => {
+      const i = Number(el.dataset.swatchIndex);
+      el.style.background = colors[i % colors.length];
+    });
+
+    new Chart(canvas, {
+      type: 'doughnut',
+      data: {
+        labels,
+        datasets: [
+          {
+            data: values,
+            backgroundColor: colors.slice(0, values.length),
+            borderColor: ink.primary === '#ffffff' ? '#1a1d22' : '#ffffff',
+            borderWidth: 2,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '62%',
+        animation: prefersReducedMotion() ? false : { duration: 700 },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${ctx.label}: ${ctx.raw}%`,
+            },
+          },
+        },
+      },
+    });
+  }
+</script>
+
+<style>
+  .chart-block__donut-grid {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 32px;
+    align-items: center;
+    margin: 20px 0 8px;
+  }
+  .chart-block__canvas-wrap--donut { height: 220px; margin: 0; }
+  .chart-block__legend { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+  .chart-block__legend li { display: flex; align-items: center; gap: 10px; font-size: 15px; }
+  .chart-block__swatch { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
+  .chart-block__legend-label { flex: 1; }
+  .chart-block__legend-value { font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  @media (max-width: 560px) {
+    .chart-block__donut-grid { grid-template-columns: 1fr; }
+  }
+</style>

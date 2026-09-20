@@ -1,0 +1,17 @@
+[
+  {
+    "amount": 250,
+    "titleKey": "help.tier1.title",
+    "descKey": "help.tier1.desc"
+  },
+  {
+    "amount": 750,
+    "titleKey": "help.tier2.title",
+    "descKey": "help.tier2.desc"
+  },
+  {
+    "amount": 2000,
+    "titleKey": "help.tier3.title",
+    "descKey": "help.tier3.desc"
+  }
+]

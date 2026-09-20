@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getDict, localizedPath, type Locale } from '../i18n/ui';
+
+export interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = getDict(locale);
+const p = dict.pages.getInvolved;
+
+const isDonationOption = (i: number) => i === 0 || i === 1;
+---
+
+<BaseLayout locale={locale} path="get-involved" title={p.title} description={p.metaDescription}>
+  <section class="section">
+    <div class="container get-involved__hero">
+      <p class="eyebrow">{p.heroEyebrow}</p>
+      <h1>{p.heroTitle}</h1>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container get-involved__grid">
+      {p.options.map((option: any, i: number) => (
+        <div class="card get-involved__option fade-in-up">
+          <h2>{option.title}</h2>
+          <p class="text-secondary">{option.desc}</p>
+          {isDonationOption(i) ? (
+            <button type="button" class="btn btn-primary" data-open-donation>{option.cta}</button>
+          ) : (
+            <a href={localizedPath(locale, 'contact')} class="btn btn-secondary">{option.cta}</a>
+          )}
+        </div>
+      ))}
+    </div>
+    <p class="text-secondary get-involved__note">{p.corporateNote}</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .get-involved__hero { max-width: 780px; }
+  .get-involved__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .get-involved__option { display: flex; flex-direction: column; gap: 14px; }
+  .get-involved__option p { flex-grow: 1; }
+  .get-involved__option .btn { align-self: flex-start; }
+  .get-involved__note { margin-top: 32px; font-size: 14px; max-width: 60ch; }
+
+  @media (max-width: 900px) {
+    .get-involved__grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) {
+    .get-involved__grid { grid-template-columns: 1fr; }
+  }
+</style>

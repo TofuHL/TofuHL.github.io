@@ -1,0 +1,379 @@
+{
+  "meta": {
+    "siteName": "Samma färger",
+    "tagline": "Stöd till barn drabbade av kriget i Ukraina",
+    "defaultDescription": "Samma färger är en svensk stiftelse som finansierar utbildning, skydd, psykosocialt stöd och matprogram för barn drabbade av kriget i Ukraina, genomförda av lokala partner på plats."
+  },
+  "nav": {
+    "home": "Hem",
+    "whoWeAre": "Vilka vi är",
+    "mission": "Vårt uppdrag",
+    "impact": "Effekt och insamling",
+    "evidence": "Bevis på stöd",
+    "getInvolved": "Engagera dig",
+    "stories": "Berättelser",
+    "transparency": "Transparens",
+    "contact": "Kontakt",
+    "donate": "Skänk",
+    "menu": "Meny",
+    "language": "Språk"
+  },
+  "footer": {
+    "about": "Samma färger är en oberoende svensk stiftelse som finansierar lokala partner som genomför utbildning, skydd, psykosocialt stöd och matprogram för barn drabbade av kriget i Ukraina.",
+    "orgLine": "Insamlingsstiftelsen Samma färger · Org.nr 802XXX-XXXX · Registrerad i Sverige",
+    "sections": "Sidor",
+    "legal": "Juridiskt",
+    "privacyPolicy": "Integritetspolicy",
+    "safeguardingPolicy": "Skyddspolicy",
+    "complaints": "Klagomålsrutin",
+    "cookieSettings": "Cookie-inställningar",
+    "rights": "Alla rättigheter förbehållna.",
+    "followUs": "Följ oss"
+  },
+  "common": {
+    "readMore": "Läs mer",
+    "learnMore": "Läs mer",
+    "downloadCsv": "Ladda ner data (CSV)",
+    "viewDataTable": "Visa som datatabell",
+    "hideDataTable": "Dölj datatabell",
+    "raised": "Insamlat",
+    "goal": "Mål",
+    "donors": "Givare",
+    "daysLeft": "Dagar kvar",
+    "of": "av",
+    "source": "Källa",
+    "updated": "Uppdaterad",
+    "skipToContent": "Hoppa till innehåll",
+    "close": "Stäng",
+    "back": "Tillbaka",
+    "next": "Nästa",
+    "submit": "Skicka",
+    "required": "Obligatoriskt",
+    "optional": "Valfritt",
+    "viewAll": "Visa alla",
+    "filterAll": "Alla",
+    "allOblasts": "Alla platser",
+    "perMonth": "/månad",
+    "month": "Månad",
+    "year": "År",
+    "campaign": "Kampanj",
+    "programme": "Program",
+    "category": "Kategori",
+    "percent": "Procent"
+  },
+  "hero": {
+    "eyebrow": "Grundad i Sverige, verksam i hela Ukraina",
+    "title": "Barn ska inte behöva vänta på att kriget tar slut för att fortsätta lära sig, leka och känna sig trygga.",
+    "subtitle": "Samma färger finansierar lokala partner som levererar utbildning, skydd, psykosocialt stöd och mat till barn drabbade av kriget i Ukraina — med full ekonomisk redovisning för varje gåva.",
+    "donate": "Skänk",
+    "seeImpact": "Se vår effekt",
+    "photoCaption": "Foto väntar: en samtyckt, värdig bild från ett pågående program ersätter denna platshållare före lansering."
+  },
+  "fundraisingBar": {
+    "title": "Insamling i realtid",
+    "raisedLabel": "insamlat",
+    "goalLabel": "mål",
+    "donorsLabel": "givare",
+    "daysLabel": "dagar kvar av denna insamlingsperiod",
+    "asOf": "Siffror uppdaterade"
+  },
+  "impact": {
+    "eyebrow": "Sedan januari 2025",
+    "title": "Vad ert stöd har finansierat hittills",
+    "children": "Barn som fått stöd",
+    "meals": "Levererade måltider",
+    "kits": "Utdelade skolpaket",
+    "shelters": "Vinteranpassade skyddsrum"
+  },
+  "help": {
+    "eyebrow": "Så hjälper din gåva",
+    "title": "Varje belopp ger ett konkret resultat",
+    "tier1": { "title": "250 kr", "desc": "Täcker ett skolpaket — ryggsäck, skolmaterial och ett varmt plagg — för ett barn under en hel termin." },
+    "tier2": { "title": "750 kr", "desc": "Finansierar en veckas handledd psykosocial lekverksamhet för en grupp om åtta barn." },
+    "tier3": { "title": "2 000 kr", "desc": "Vinteranpassar ett delat källarskyddsrum med isolering, belysning och första hjälpen-utrustning." },
+    "ctaDonate": "Skänk detta belopp"
+  },
+  "featuredStory": {
+    "eyebrow": "Från fältet",
+    "readMore": "Läs hela berättelsen"
+  },
+  "partners": {
+    "eyebrow": "Vi samarbetar med",
+    "title": "Partner och media"
+  },
+  "newsletter": {
+    "title": "Få kvartalsuppdateringar, inte brus",
+    "desc": "Ett kort mejl per kvartal: vad som hänt, vad det kostat och var vi behöver mer stöd. Avsluta prenumerationen när som helst.",
+    "placeholder": "du@exempel.se",
+    "submit": "Prenumerera",
+    "disclaimer": "Genom att prenumerera godkänner du vår integritetspolicy. Vi delar aldrig din e-post med tredje part.",
+    "success": "Tack — kolla din inkorg för att bekräfta din prenumeration."
+  },
+  "closingCta": {
+    "title": "Ditt stöd håller ett lokalt team igång på plats",
+    "desc": "Engångsgåva eller månadsgivande — varje gåva redovisas mot kampanjerna ovan.",
+    "donate": "Skänk nu"
+  },
+  "donationPanel": {
+    "title": "Skänk en gåva",
+    "subtitle": "100 % av din gåva fördelas enligt vår publicerade fördelningsmodell — se exakt fördelning på sidan Effekt.",
+    "oneOff": "Engångsgåva",
+    "monthly": "Månadsgivande",
+    "presetLabel": "Välj ett belopp",
+    "customAmount": "Eget belopp",
+    "customPlaceholder": "Ange belopp (SEK)",
+    "coverFees": "Täck transaktionsavgifter",
+    "coverFeesDesc": "Lägg till cirka 2,5 % så att 100 % av din avsedda gåva når programmen.",
+    "taxDeduction": "Jag vill ha ett kvitto för skatteavdrag",
+    "taxDeductionDesc": "Kräver ditt svenska personnummer eller samordningsnummer enligt Skatteverkets gåvoskatteavdrag.",
+    "dedication": "Tillägna denna gåva (valfritt)",
+    "dedicationPlaceholder": "Till minne av…",
+    "paymentMethods": "Betalningsmetod",
+    "continueBtn": "Fortsätt till betalning",
+    "secureNote": "Betalningar hanteras av Stripe och PayPal. Samma färger lagrar aldrig dina kortuppgifter.",
+    "closeLabel": "Stäng gåvopanelen"
+  },
+  "confirmation": {
+    "eyebrow": "Tack",
+    "title": "Din gåva är bekräftad",
+    "receiptSent": "Ett kvitto har skickats till din e-post.",
+    "shareTitle": "Berätta för någon annan",
+    "shareDesc": "Muntlig rekommendation är hur de flesta av våra givare hittar oss.",
+    "monthlyPrompt": "Överväg att göra detta till en månadsgåva — det gör att vi kan planera program längre fram.",
+    "monthlyCta": "Bli månadsgivare",
+    "backHome": "Tillbaka till startsidan",
+    "devNote": "Detta är en demonstrationsskärm för bekräftelse. Koppla donationsformulärets skicka-hanterare till din riktiga betalningsleverantör (Stripe Checkout/PayPal SDK) före lansering — se README."
+  },
+  "cookieConsent": {
+    "message": "Vi använder nödvändiga cookies för att driva denna webbplats, och — endast med ditt samtycke — integritetsvänlig analys för att förstå vilka sidor som är användbara. Aldrig annonsspårning.",
+    "acceptAll": "Acceptera analys",
+    "essentialOnly": "Endast nödvändiga",
+    "settingsTitle": "Cookie-inställningar",
+    "learnMore": "Integritetspolicy",
+    "savedNote": "Du kan ändra detta när som helst i sidfoten."
+  },
+  "pages": {
+    "whoWeAre": {
+      "title": "Vilka vi är",
+      "metaDescription": "Grundarhistoria, team, juridisk identitet och styrning för Samma färger, en svensk stiftelse som finansierar program för barn drabbade av kriget i Ukraina.",
+      "heroEyebrow": "Vår historia",
+      "heroTitle": "Vi började vid ett köksbord i Malmö. Vi drivs fortfarande på samma sätt.",
+      "storyIntro": "I jagform, av medgrundare Elin Håkansson:",
+      "storyParagraphs": [
+        "I mars 2022 samordnade jag logistik för en Röda Korset-krets i Skåne och såg konvojer med donerade varor lämna Sverige med nästan ingen insyn i vad som hände med dem efter gränsen. Vänner frågade istället var de skulle skicka pengar — och jag hade inget bra svar.",
+        "Marcus, som granskade små ideella organisationer i sitt yrke, och jag började föra ett delat kalkylark: vad vi samlat in, vem som fått det, vad det köpt. Vi visade det oredigerat för de första tjugo givarna. Ingen avslutade sin prenumeration.",
+        "Sent 2022 hade vi registrerat oss som stiftelse och etablerat vårt första stående partnerskap, med en liten utbildningsorganisation i Dnipro driven av människor som gjort detta arbete långt innan vi existerade. Den relationen — lokala partner leder genomförandet, vi finansierar och redovisar — är fortfarande modellen idag.",
+        "Vi är inte den största organisationen inom detta område. Vi försöker vara en av de mest transparenta: du ska kunna titta på vilken siffra som helst på denna webbplats och ta reda på exakt varifrån den kommer."
+      ],
+      "teamTitle": "Team",
+      "teamIntro": "Sex personer i två länder, plus den lokala partnerpersonal som utför merparten av det faktiska genomförandearbetet.",
+      "legalTitle": "Juridisk identitet och styrning",
+      "timelineTitle": "Tidslinje",
+      "boardTitle": "Styrelse",
+      "legalLabels": {
+        "registeredName": "Registrerat namn",
+        "orgNumber": "Organisationsnummer",
+        "country": "Registreringsland",
+        "authority": "Registreringsmyndighet",
+        "license": "Insamlingslicens"
+      }
+    },
+    "mission": {
+      "title": "Vårt uppdrag",
+      "metaDescription": "Problemet vi arbetar med, våra fyra programpelare, var vi verkar i Ukraina, och principerna som styr varje partnerskap.",
+      "heroEyebrow": "Varför detta arbete",
+      "heroTitle": "Kriget pausade inte barndomen. Det bör inte insatsen heller göra.",
+      "problemTitle": "Problemet, i siffror",
+      "pillarsTitle": "Våra fyra programpelare",
+      "pillarsIntro": "Varje pelare genomförs av en lokal partnerorganisation som vi finansierar och följer upp — vi driver inte egna genomförandeteam för dessa program.",
+      "pillars": [
+        {
+          "id": "education",
+          "title": "Fortsatt utbildning",
+          "what": "Skolpaket, ersättningsmaterial och mindre bidrag till skolor för uppvärmning och reparation så att klassrum kan öppna igen snabbare.",
+          "how": "Behov identifieras tillsammans med skoladministrationen; paket packas regionalt och delas ut på skolan eller ett gemenskapscenter.",
+          "who": "Genomförs av fyra regionala partnerorganisationer, samordnat av vår programdirektör i Dnipro.",
+          "cost": "Ungefär 250 kr per barn och termin för ett standardpaket; större skolreparationsbidrag bedöms individuellt och kräver tre konkurrerande offerter."
+        },
+        {
+          "id": "shelter",
+          "title": "Skydd och säkerhet",
+          "what": "Vinteranpassning och grundläggande utrustning av delade källarskyddsrum som används vid flyglarm.",
+          "how": "Platser prioriteras med hjälp av bostadsförvaltningens data om familjer med små barn, och isoleras, förses med belysning och första hjälpen-material.",
+          "who": "Genomförs tillsammans med kommunal fastighetspersonal och vår fältkoordinator i Charkiv.",
+          "cost": "Ungefär 2 000 kr per skyddsrum för ett komplett vinteranpassningspaket."
+        },
+        {
+          "id": "psychosocial",
+          "title": "Psykosocialt stöd",
+          "what": "Strukturerad, handledd lek och gruppverksamhet för barn, ledd av utbildade lokala handledare.",
+          "how": "Sessioner hålls flera eftermiddagar i veckan i renoverade gårdsmiljöer eller gemenskapscenter; ingen räkning eller pressåtkomst under sessionerna.",
+          "who": "Genomförs av Dnipro Children's Fund och två mindre partner i Zaporizjzja och Lviv.",
+          "cost": "Ungefär 750 kr finansierar en veckas sessioner för en grupp om åtta barn."
+        },
+        {
+          "id": "nutrition",
+          "title": "Nutrition",
+          "what": "Dagliga varma måltider som lagas och delas ut genom gemenskapsdrivna kök.",
+          "how": "Köken köper råvaror lokalt enligt vår upphandlingspolicy och rapporterar måltidsantal varje vecka.",
+          "who": "Genomförs av Kharkiv Relief Kitchen Network och partnerkök i Cherson och Tjernihiv.",
+          "cost": "Ungefär 9 kr per måltid, inklusive tillagning och utdelning."
+        }
+      ],
+      "pillarLabels": { "what": "Vad", "how": "Hur", "who": "Vem genomför det", "cost": "Vad det kostar" },
+      "mapTitle": "Var vi verkar",
+      "mapIntro": "Aktiva platser per datumet nedan. Detta är en förenklad orienteringskarta, inte en exakt gränskarta.",
+      "principlesTitle": "Våra principer",
+      "principlesIntro": "Dessa fyra åtaganden gäller för varje partnerskap, varje kampanj och allt innehåll vi publicerar.",
+      "principles": [
+        { "title": "Barnskydd först", "desc": "Inget barn namnges, geolokaliseras eller fotograferas utan dokumenterat samtycke från vårdnadshavare. All fältpersonal skriver under vår uppförandekod innan kontakt med barn." },
+        { "title": "Lokalt partnerskap, inte parallellt genomförande", "desc": "Vi finansierar och följer upp lokala organisationer istället för att skicka Sverigebaserad personal för att leverera program direkt. De känner sammanhanget; vi bidrar med finansiell disciplin och redovisning." },
+        { "title": "Ingen dubblering av hjälp", "desc": "Innan vi finansierar en ny plats kontrollerar vi regionala samordningslistor för att undvika att leverera där en annan organisation redan täcker samma behov." },
+        { "title": "Mottagarnas värdighet", "desc": "Familjer krävs aldrig fotograferas, berätta sin historia eller bevisa svårigheter utöver vad en lokal partners intagsprocess redan fastställer." }
+      ]
+    },
+    "impact": {
+      "title": "Effekt och insamling",
+      "metaDescription": "Diagram över kumulativt insamlade medel, fördelning av medel, kampanjframsteg och antal barn nådda per program, med tillgängliga datatabeller och CSV-nedladdning.",
+      "heroEyebrow": "Siffrorna",
+      "heroTitle": "Varje diagram här har en källa, en datatabell och en CSV-nedladdning",
+      "fundsOverTimeTitle": "Kumulativt insamlade medel över tid",
+      "allocationTitle": "Fördelning av medel",
+      "campaignProgressTitle": "Kampanjframsteg",
+      "childrenReachedTitle": "Barn nådda per program, per år",
+      "accessibilityNote": "Varje diagram på denna sida är tangentbordsfokuserbart, innehåller ett textalternativ i en datatabell och förlitar sig inte enbart på färg för att förmedla betydelse."
+    },
+    "evidence": {
+      "title": "Bevis på stöd",
+      "metaDescription": "Partnerorganisationer, omdömen, pressbevakning, fältbevis och nedladdningsbara ekonomiska rapporter.",
+      "heroEyebrow": "Ta inte bara vårt ord för det",
+      "heroTitle": "Vad våra partner, givare och pressen säger — och underlaget bakom",
+      "partnersTitle": "Partnerorganisationer",
+      "testimonialsTitle": "I deras egna ord",
+      "pressTitle": "Pressbevakning",
+      "fieldEvidenceTitle": "Fältbevis",
+      "fieldEvidenceIntro": "Leveransfoton och logistiksammanfattningar, publicerade med partners och vårdnadshavares samtycke. Fullständiga leveranskvitton finns tillgängliga för journalister och institutionella givare på begäran.",
+      "financialTitle": "Ekonomisk transparens",
+      "financialIntro": "Granskade årsredovisningar, vår insamlingsregisterlistning och en sammanfattning i klarspråk av hur medel fördelas.",
+      "endorsementsTitle": "Rekommendationer",
+      "endorsementsNote": "Se pressbevakningen ovan; formella institutionella rekommendationer läggs till här allteftersom de säkras."
+    },
+    "getInvolved": {
+      "title": "Engagera dig",
+      "metaDescription": "Sätt att stödja Samma färger: engångsgåva eller månadsgivande, företagspartnerskap, gåvor in natura, volontärarbete, eller starta din egen insamling.",
+      "heroEyebrow": "Fler än ett sätt att hjälpa",
+      "heroTitle": "Välj det sätt att ge som passar dig",
+      "options": [
+        { "title": "Engångsgåva", "desc": "En enstaka gåva, valfritt belopp, hanteras direkt via kort, Apple Pay, Google Pay, PayPal eller Swish.", "cta": "Skänk en gång" },
+        { "title": "Månadsgivande", "desc": "En återkommande gåva gör att vi kan planera program över en hel skoltermin eller vinter, inte bara en enskild leverans.", "cta": "Bli månadsgivare" },
+        { "title": "Företagspartnerskap och matchande gåvor", "desc": "Vi samarbetar med företag kring löneavdrag för gåvor, matchande donationer och logistikstöd in natura som exemplet nedan.", "cta": "Kontakta vårt partnerskapsteam" },
+        { "title": "Gåvor in natura", "desc": "Vi har för närvarande öppen logistikkapacitet för skolmaterial i bulk, kläder för kallt väder och hygienartiklar inköpta inom EU.", "cta": "Diskutera en gåva in natura" },
+        { "title": "Volontärarbete", "desc": "Distansroller inom översättning, bidragsansökningar och ekonomigranskning; roller på plats med vårt Sverigebaserade eventteam.", "cta": "Se volontärroller" },
+        { "title": "Starta din egen insamling", "desc": "Födelsedagsinsamlingar, skolans kaksläpp, maratonsidor — vi tillhandahåller ett kit och en egen uppföljningssida.", "cta": "Starta en insamling" }
+      ],
+      "corporateNote": "Förfrågningar om företagspartnerskap och matchande gåvor besvaras vanligtvis inom två arbetsdagar av vår chef för givarrelationer."
+    },
+    "stories": {
+      "title": "Berättelser och nyheter",
+      "metaDescription": "Fältuppdateringar från Samma färgers program i Ukraina, filtrerbara efter program och plats.",
+      "heroEyebrow": "Från fältet",
+      "heroTitle": "Berättelser och nyheter",
+      "filterProgramme": "Filtrera efter program",
+      "filterLocation": "Filtrera efter plats",
+      "noResults": "Inga berättelser matchar dessa filter ännu.",
+      "byline": "Av {author} · {location} · {date}"
+    },
+    "transparency": {
+      "title": "Transparens",
+      "metaDescription": "Vart varje krona går, vår omkostnadsandel förklarad, upphandlingspolicy, skyddspolicy och hur du framför ett klagomål.",
+      "heroEyebrow": "Läs innan du ger, inte efteråt",
+      "heroTitle": "Vart varje krona går",
+      "allocationTitle": "Fördelning av medel, förklarad",
+      "allocationBody": "83 % av varje krona går direkt till programgenomförande — skolpaket, skyddsmaterial, mat och löner till psykosociala handledare hos lokala partner. 9 % täcker administration: revision, försäkring, ekonomisystem och kärnpersonal som inte är kopplad till ett enskilt program. 8 % täcker insamling: betalningsavgifter, kampanjmaterial och givarkommunikation. Vi publicerar denna fördelning varje kvartal, inte bara årligen, och den kontrolleras mot våra granskade räkenskaper.",
+      "overheadTitle": "Varför vi inte jagar ett påstående om 'noll omkostnader'",
+      "overheadBody": "Vissa organisationer marknadsför att '100 % av din gåva når fältet' genom att låta en separat fond täcka löner och revisionskostnader. Det gör vi inte — det flyttar bara samma kostnader utanför redovisningen. Vår administrationssiffra på 9 % är den verkliga, granskade kostnaden för att driva denna organisation ansvarsfullt, inklusive revisionen som gör att du kan verifiera varje annan siffra på denna webbplats.",
+      "procurementTitle": "Upphandlingspolicy",
+      "procurementBody": "Inköp över 15 000 kr kräver tre konkurrerande offerter, dokumenterade i vårt ekonomisystem. Vi prioriterar ukrainska leverantörer för varor som finns lokalt, både för att stödja den lokala ekonomin och för att minska gränsöverskridande logistikrisk. Ingen styrelseledamot, anställd eller deras närmaste familj får ha ett ekonomiskt intresse i en leverantör vi använder.",
+      "safeguardingTitle": "Skyddspolicy",
+      "safeguardingBody": "Varje anställd och långsiktig volontär med kontakt med barn genomgår en skyddsgenomgång och skriver under vår uppförandekod innan de börjar. Inget barn namnges med fullständigt namn, skola eller exakt adress i något publicerat material. Varje identifierbart foto av ett barn kräver skriftligt samtycke från vårdnadshavare, dokumenterat separat från fotot. Oro kan framföras konfidentiellt — se klagomålsavsnittet nedan.",
+      "complaintsTitle": "Klagomålsrutin",
+      "complaintsBody": "Om något gällande vår insamling, ett program eller uppförandet hos någon anställd eller partner oroar dig, kontakta complaints@sammafarger.example direkt, eller använd kontaktformuläret och välj 'Klagomål'. Vi bekräftar mottagandet av varje klagomål inom två arbetsdagar och en styrelseledamot granskar personligen varje skyddsrelaterat klagomål.",
+      "reportsTitle": "Nedladdningsbara rapporter",
+      "reportsIntro": "Årsredovisningar och revisionsberättelser, senaste först.",
+      "privacyTitle": "Integritetspolicy",
+      "privacyBody": "Vi samlar bara in det vi behöver: dina kontaktuppgifter om du skänker en gåva eller prenumererar, och — endast efter att du aktivt samtyckt via cookie-bannern — integritetsvänlig analys utan spårning av vilka sidor som används. Vi säljer eller delar aldrig personuppgifter med tredje part för marknadsföring. Kortuppgifter hanteras helt av Stripe och PayPal; vi ser eller lagrar dem aldrig. Du kan när som helst begära en kopia av, rättelse av eller radering av dina uppgifter genom att mejla privacy@sammafarger.example, i enlighet med EU:s dataskyddsförordning (GDPR) och dataskyddslagen."
+    },
+    "contact": {
+      "title": "Kontakt",
+      "metaDescription": "Kontakta Samma färger — allmänna frågor, presskontakt, postadress och sociala länkar.",
+      "heroEyebrow": "Hör av dig",
+      "heroTitle": "Kontakta oss",
+      "formTitle": "Skicka ett meddelande",
+      "nameLabel": "Namn",
+      "emailLabel": "E-post",
+      "subjectLabel": "Ämne",
+      "subjectOptions": ["Allmän fråga", "Press", "Partnerskap", "Volontärarbete", "Klagomål"],
+      "messageLabel": "Meddelande",
+      "submitLabel": "Skicka meddelande",
+      "formNote": "Detta formulär är en platshållare för frontend — koppla det till din formulärbackend (t.ex. Formspree, en serverless-funktion eller ert CRM:s inkommande API) före lansering. Se README.",
+      "formSent": "Meddelandet fångades lokalt — koppla detta formulär till en backend för att faktiskt skicka det. Se README.",
+      "orgDetailsTitle": "Organisationsuppgifter",
+      "pressTitle": "Presskontakt",
+      "socialTitle": "Följ oss"
+    }
+  },
+  "campaign": {
+    "winterShelter": "Vinterskydd och skolpaket",
+    "schoolKits": "Skolstartspaket",
+    "psychosocial": "Psykosocialt stöd",
+    "nutrition": "Gemenskapsnutrition"
+  },
+  "alloc": {
+    "programme": "Programgenomförande",
+    "admin": "Administration",
+    "fundraising": "Insamlingskostnader"
+  },
+  "programme": {
+    "education": "Utbildning",
+    "shelter": "Skydd",
+    "psychosocial": "Psykosocialt stöd",
+    "nutrition": "Nutrition"
+  },
+  "timeline": {
+    "2022": { "title": "Grundades", "desc": "Elin och Marcus registrerar Samma färger som en svensk stiftelse efter månader av informell insamling bland vänner och kollegor." },
+    "2023": { "title": "Första stående partnerskapet", "desc": "Formellt partnerskapsavtal tecknas med Dnipro Children's Fund; första kvartalsvisa transparensrapporten publiceras." },
+    "2024": { "title": "Utökning till fyra program", "desc": "Vinteranpassning av skyddsrum och gemenskapsnutrition läggs till vid sidan av utbildning och psykosocialt stöd; andra och tredje partnerorganisationen ansluts." },
+    "2025": { "title": "8 000+ barn har fått stöd", "desc": "Kumulativt insamlade medel passerar 3 miljoner kr; första företagspartnerskapet med matchande gåvor tecknas." },
+    "2026": { "title": "Fem oblast, åtta partnerplatser", "desc": "Programnärvaro utökas till Zaporizjzja och Lviv; webbplatsen omdesignas för full ekonomisk transparens." }
+  },
+  "board": {
+    "chair": "Ordförande",
+    "treasurer": "Kassör",
+    "programme": "Programdirektör, Ukraina",
+    "member": "Styrelseledamot"
+  },
+  "loc": {
+    "kharkiv": "Charkiv",
+    "kyiv": "Kyiv",
+    "chernihiv": "Tjernihiv",
+    "dnipro": "Dnipro",
+    "kherson": "Cherson",
+    "odesa": "Odessa",
+    "lviv": "Lviv",
+    "zaporizhzhia": "Zaporizjzja"
+  },
+  "stat": {
+    "displacedChildren": {
+      "figure": "1,7 miljoner+",
+      "text": "barn internflyktingar eller lever som flyktingar sedan 2022"
+    },
+    "schoolsDamaged": {
+      "figure": "3 800+",
+      "text": "skolor skadade eller förstörda, vilket stör kontinuiteten i utbildningen"
+    },
+    "psychosocialNeed": {
+      "figure": "~1 av 2",
+      "text": "barn i drabbade regioner visar tecken på krigsrelaterad psykisk stress"
+    }
+  }
+}

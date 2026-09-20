@@ -1,0 +1,21 @@
+{
+  "name": "Rasmus Ek",
+  "role": {
+    "en": "Head of Donor Relations",
+    "sv": "Chef för givarrelationer",
+    "uk": "Керівник відділу зв'язків з донорами"
+  },
+  "bio": {
+    "en": "Joined in 2023 from the corporate sponsorship team of a Swedish sports federation. Manages corporate partnerships and matched giving.",
+    "sv": "Kom 2023 från ett svenskt idrottsförbunds sponsringsteam. Ansvarar för företagspartnerskap och matchande gåvor.",
+    "uk": "Приєднався у 2023 році з команди корпоративного спонсорства шведської спортивної федерації. Керує корпоративними партнерствами та програмами співфінансування пожертв."
+  },
+  "location": "Stockholm, Sweden",
+  "photoAlt": {
+    "en": "Portrait of Rasmus Ek, Head of Donor Relations",
+    "sv": "Porträtt av Rasmus Ek, chef för givarrelationer",
+    "uk": "Портрет Расмуса Ека, керівника відділу зв'язків з донорами"
+  },
+  "order": 5,
+  "group": "sweden"
+}

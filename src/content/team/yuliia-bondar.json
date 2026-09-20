@@ -1,0 +1,21 @@
+{
+  "name": "Yuliia Bondar",
+  "role": {
+    "en": "Field Coordinator, Kharkiv Oblast",
+    "sv": "Fältkoordinator, Charkiv oblast",
+    "uk": "Польова координаторка, Харківська область"
+  },
+  "bio": {
+    "en": "Runs day-to-day delivery of shelter and nutrition programmes near the front line. A teacher before 2022, she now coordinates eleven local volunteers.",
+    "sv": "Ansvarar för det dagliga genomförandet av skydds- och matprogram nära frontlinjen. Var lärare före 2022 och samordnar idag elva lokala volontärer.",
+    "uk": "Керує щоденною реалізацією програм притулку та харчування поблизу лінії фронту. До 2022 року працювала вчителькою, зараз координує одинадцять місцевих волонтерів."
+  },
+  "location": "Kharkiv Oblast, Ukraine",
+  "photoAlt": {
+    "en": "Portrait of Yuliia Bondar, field coordinator in Kharkiv Oblast",
+    "sv": "Porträtt av Yuliia Bondar, fältkoordinator i Charkiv oblast",
+    "uk": "Портрет Юлії Бондар, польової координаторки у Харківській області"
+  },
+  "order": 4,
+  "group": "ukraine"
+}

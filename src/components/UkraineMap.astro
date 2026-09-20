@@ -1,0 +1,93 @@
+---
+import { getDict, pick, type Locale } from '../i18n/ui';
+import oblasts from '../data/oblasts.json';
+
+export interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = getDict(locale);
+
+const locations = oblasts.locations.map((loc) => ({
+  ...loc,
+  name: String(pick(dict, loc.nameKey)),
+  programmeLabels: loc.programmes.map((id) => String(pick(dict, `programme.${id}`))),
+}));
+---
+
+<div class="ukraine-map">
+  <svg
+    viewBox="0 0 100 70"
+    role="img"
+    aria-labelledby="ukraine-map-title ukraine-map-desc"
+    class="ukraine-map__svg"
+  >
+    <title id="ukraine-map-title">{dict.pages.mission.mapTitle}</title>
+    <desc id="ukraine-map-desc">{dict.pages.mission.mapIntro} {locations.map((l) => l.name).join(', ')}.</desc>
+
+    <path
+      class="ukraine-map__silhouette"
+      d="M8,32 C6,26 10,20 16,18 C15,13 20,9 27,10 C30,6 38,4 45,6 C52,3 62,4 68,8 C76,7 85,11 88,18 C93,20 95,27 92,33 C95,39 92,47 86,50 C87,56 81,62 74,62 C71,67 62,68 55,64 C48,68 38,67 33,62 C25,63 17,58 16,51 C10,49 6,43 8,37 Z"
+    />
+
+    {locations.map((loc) => (
+      <g
+        class="ukraine-map__marker"
+        transform={`translate(${loc.x}, ${loc.y})`}
+        tabindex="0"
+        role="img"
+        aria-label={`${loc.name}: ${loc.programmeLabels.join(', ')}`}
+      >
+        <circle r="2.1" class="ukraine-map__dot" />
+        <circle r="4.2" class="ukraine-map__pulse" />
+        <text x="0" y="-4.5" class="ukraine-map__label" text-anchor="middle">{loc.name}</text>
+      </g>
+    ))}
+  </svg>
+
+  <ul class="ukraine-map__list">
+    {locations.map((loc) => (
+      <li>
+        <span class="ukraine-map__list-dot" aria-hidden="true"></span>
+        <strong>{loc.name}</strong>
+        <span class="text-secondary">— {loc.programmeLabels.join(', ')}</span>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<style>
+  .ukraine-map { display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px; align-items: center; margin-top: 28px; }
+  .ukraine-map__svg { width: 100%; height: auto; }
+  .ukraine-map__silhouette {
+    fill: var(--color-bg-warm);
+    stroke: var(--color-border);
+    stroke-width: 0.6;
+  }
+  .ukraine-map__marker { cursor: pointer; }
+  .ukraine-map__dot { fill: var(--color-azure); }
+  .ukraine-map__pulse { fill: none; stroke: var(--color-azure); stroke-width: 0.5; opacity: 0.4; }
+  .ukraine-map__label {
+    font-size: 3.2px;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    fill: var(--color-text);
+    paint-order: stroke;
+    stroke: var(--color-bg);
+    stroke-width: 1.4px;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+  }
+  .ukraine-map__marker:hover .ukraine-map__label,
+  .ukraine-map__marker:focus .ukraine-map__label,
+  .ukraine-map__marker:focus-visible .ukraine-map__label { opacity: 1; }
+  .ukraine-map__marker:focus-visible .ukraine-map__dot { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+
+  .ukraine-map__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .ukraine-map__list li { font-size: 14.5px; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .ukraine-map__list-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--color-azure); flex-shrink: 0; }
+
+  @media (max-width: 760px) {
+    .ukraine-map { grid-template-columns: 1fr; }
+  }
+</style>

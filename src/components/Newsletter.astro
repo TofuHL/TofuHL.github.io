@@ -1,0 +1,73 @@
+---
+import { getDict, type Locale } from '../i18n/ui';
+
+export interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = getDict(locale);
+---
+
+<section class="newsletter section" aria-labelledby="newsletter-title">
+  <div class="container newsletter__card">
+    <div>
+      <h2 id="newsletter-title">{dict.newsletter.title}</h2>
+      <p class="text-secondary">{dict.newsletter.desc}</p>
+    </div>
+    <form class="newsletter__form" data-newsletter-form>
+      <label class="visually-hidden" for="newsletter-email">{dict.newsletter.placeholder}</label>
+      <input id="newsletter-email" type="email" name="email" required placeholder={dict.newsletter.placeholder} />
+      <button type="submit" class="btn btn-primary">{dict.newsletter.submit}</button>
+    </form>
+    <p
+      class="newsletter__disclaimer text-secondary"
+      data-newsletter-message
+      data-success={dict.newsletter.success}
+    >
+      {dict.newsletter.disclaimer}
+    </p>
+  </div>
+</section>
+
+<style>
+  .newsletter__card {
+    background: var(--color-bg-warm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 48px;
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+  .newsletter__form { display: flex; gap: 10px; }
+  .newsletter__form input {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 15px;
+    font-family: var(--font-ui);
+  }
+  .newsletter__disclaimer { grid-column: 1 / -1; font-size: 12px; margin: 0; }
+
+  @media (max-width: 760px) {
+    .newsletter__card { grid-template-columns: 1fr; padding: 32px 24px; }
+    .newsletter__form { flex-direction: column; }
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-newsletter-form]');
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const message = document.querySelector<HTMLElement>('[data-newsletter-message]');
+    if (message) {
+      message.textContent = message.dataset.success ?? message.textContent;
+    }
+    form.reset();
+    // Front-end placeholder only: wire this submit handler to your ESP
+    // (Mailchimp, Brevo, etc.) or a serverless function before launch.
+  });
+</script>

@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import FundraisingBar from '../components/FundraisingBar.astro';
+import ImpactStats from '../components/ImpactStats.astro';
+import HowItHelps from '../components/HowItHelps.astro';
+import FeaturedStory from '../components/FeaturedStory.astro';
+import PartnerLogos from '../components/PartnerLogos.astro';
+import Newsletter from '../components/Newsletter.astro';
+import ClosingCta from '../components/ClosingCta.astro';
+import { getDict, type Locale } from '../i18n/ui';
+
+export interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = getDict(locale);
+---
+
+<BaseLayout locale={locale} path="" title={dict.meta.tagline} description={dict.meta.defaultDescription}>
+  <Hero locale={locale} />
+  <FundraisingBar locale={locale} />
+  <ImpactStats locale={locale} />
+  <HowItHelps locale={locale} />
+  <FeaturedStory locale={locale} />
+  <PartnerLogos locale={locale} />
+  <Newsletter locale={locale} />
+  <ClosingCta locale={locale} />
+</BaseLayout>
