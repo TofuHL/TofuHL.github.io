@@ -1,0 +1,13 @@
+{
+  "_comment": "Markers for the schematic 'where we work' map. x/y are percentages within the map viewBox, approximate only — this is a simplified orientation map, not a precise cartographic boundary map.",
+  "locations": [
+    { "id": "kharkiv", "nameKey": "loc.kharkiv", "x": 78, "y": 24, "programmes": ["shelter", "nutrition"] },
+    { "id": "kyiv", "nameKey": "loc.kyiv", "x": 52, "y": 30, "programmes": ["education", "psychosocial"] },
+    { "id": "chernihiv", "nameKey": "loc.chernihiv", "x": 50, "y": 14, "programmes": ["education", "nutrition"] },
+    { "id": "dnipro", "nameKey": "loc.dnipro", "x": 66, "y": 48, "programmes": ["psychosocial", "shelter"] },
+    { "id": "kherson", "nameKey": "loc.kherson", "x": 54, "y": 68, "programmes": ["nutrition", "shelter"] },
+    { "id": "odesa", "nameKey": "loc.odesa", "x": 36, "y": 74, "programmes": ["education", "nutrition"] },
+    { "id": "lviv", "nameKey": "loc.lviv", "x": 12, "y": 34, "programmes": ["education", "psychosocial"] },
+    { "id": "zaporizhzhia", "nameKey": "loc.zaporizhzhia", "x": 66, "y": 60, "programmes": ["shelter", "psychosocial"] }
+  ]
+}

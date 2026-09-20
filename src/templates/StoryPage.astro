@@ -1,0 +1,59 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PhotoPlaceholder from '../components/PhotoPlaceholder.astro';
+import ClosingCta from '../components/ClosingCta.astro';
+import { getDict, localizedPath, format, type Locale } from '../i18n/ui';
+
+export interface Props {
+  locale: Locale;
+  entry: CollectionEntry<'stories'>;
+}
+const { locale, entry } = Astro.props;
+const dict = getDict(locale);
+const p = dict.pages.stories;
+const { Content } = await entry.render();
+
+const dateFormat = new Intl.DateTimeFormat(locale === 'uk' ? 'uk-UA' : locale === 'sv' ? 'sv-SE' : 'en-GB', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+const byline = format(p.byline, {
+  author: entry.data.author,
+  location: entry.data.location,
+  date: dateFormat.format(entry.data.date),
+});
+---
+
+<BaseLayout
+  locale={locale}
+  path={`stories/${entry.slug.replace(`${locale}/`, '')}`}
+  title={entry.data.title}
+  description={entry.data.summary}
+>
+  <article class="section story-page">
+    <div class="container story-page__inner">
+      <a href={localizedPath(locale, 'stories')} class="story-page__back">← {p.title}</a>
+      <span class="badge">{dict.programme[entry.data.programme as keyof typeof dict.programme]}</span>
+      <h1>{entry.data.title}</h1>
+      <p class="story-page__byline text-secondary">{byline}</p>
+      <PhotoPlaceholder caption={entry.data.photoAlt} ratio="16 / 9" class="story-page__photo" />
+      <div class="story-page__body">
+        <Content />
+      </div>
+    </div>
+  </article>
+  <ClosingCta locale={locale} />
+</BaseLayout>
+
+<style>
+  .story-page__inner { max-width: 760px; }
+  .story-page__back { font-size: 14px; font-weight: 600; display: inline-block; margin-bottom: 20px; text-decoration: none; }
+  .story-page h1 { margin-top: 12px; }
+  .story-page__byline { margin-bottom: 24px; }
+  .story-page__photo { margin-bottom: 32px; }
+  .story-page__body { font-size: 17px; line-height: 1.75; }
+  .story-page__body :global(p) { margin-bottom: 1.3em; }
+  .story-page__body :global(a) { color: var(--color-azure); }
+</style>

@@ -1,0 +1,100 @@
+---
+import { getDict, type Locale } from '../i18n/ui';
+
+export interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = getDict(locale);
+---
+
+<div class="cookie-consent" data-cookie-consent hidden>
+  <div class="cookie-consent__inner container">
+    <p class="cookie-consent__message">{dict.cookieConsent.message}</p>
+    <div class="cookie-consent__actions">
+      <a href={`/${locale}/transparency/#privacy`} class="cookie-consent__link">{dict.cookieConsent.learnMore}</a>
+      <button type="button" class="btn btn-secondary" data-cookie-essential>{dict.cookieConsent.essentialOnly}</button>
+      <button type="button" class="btn btn-primary" data-cookie-accept>{dict.cookieConsent.acceptAll}</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cookie-consent {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 900;
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+    box-shadow: 0 -8px 24px rgba(17, 20, 24, 0.08);
+  }
+  .cookie-consent[hidden] { display: none; }
+  .cookie-consent__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px var(--gutter);
+  }
+  .cookie-consent__message { margin: 0; font-size: 13.5px; max-width: 640px; color: var(--color-text-secondary); }
+  .cookie-consent__actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .cookie-consent__link { font-size: 13px; }
+  .cookie-consent__actions .btn { padding: 9px 16px; font-size: 13.5px; }
+</style>
+
+<script>
+  const STORAGE_KEY = 'samma-farger-cookie-consent';
+  type Consent = 'all' | 'essential';
+
+  function getConsent(): Consent | null {
+    try {
+      const value = localStorage.getItem(STORAGE_KEY);
+      return value === 'all' || value === 'essential' ? value : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function setConsent(value: Consent) {
+    try {
+      localStorage.setItem(STORAGE_KEY, value);
+    } catch {
+      /* private browsing or storage disabled: consent banner will just reappear */
+    }
+    applyConsent(value);
+  }
+
+  function applyConsent(value: Consent) {
+    document.documentElement.dataset.cookieConsent = value;
+    if (value === 'all') {
+      // Placeholder hook: load a privacy-respecting analytics script here only
+      // after explicit consent. No script is loaded before this point.
+      window.dispatchEvent(new CustomEvent('analytics-consent-granted'));
+    }
+  }
+
+  const banner = document.querySelector<HTMLElement>('[data-cookie-consent]');
+  const existing = getConsent();
+  if (existing) {
+    applyConsent(existing);
+  } else if (banner) {
+    banner.hidden = false;
+  }
+
+  document.querySelector('[data-cookie-accept]')?.addEventListener('click', () => {
+    setConsent('all');
+    if (banner) banner.hidden = true;
+  });
+  document.querySelector('[data-cookie-essential]')?.addEventListener('click', () => {
+    setConsent('essential');
+    if (banner) banner.hidden = true;
+  });
+  document.querySelectorAll('[data-cookie-settings-open]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (banner) banner.hidden = false;
+    });
+  });
+</script>

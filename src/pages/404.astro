@@ -1,0 +1,37 @@
+---
+import '@fontsource-variable/inter';
+import '@fontsource/source-serif-4/600.css';
+import '../styles/global.css';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Page not found — Samma färger</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <main class="section not-found">
+      <div class="container not-found__inner">
+        <p class="eyebrow">404</p>
+        <h1>Page not found</h1>
+        <p class="text-secondary">The page you're looking for doesn't exist or may have moved.</p>
+        <ul class="not-found__links">
+          <li><a href="/en/">English</a></li>
+          <li><a href="/sv/">Svenska</a></li>
+          <li><a href="/uk/">Українська</a></li>
+        </ul>
+      </div>
+    </main>
+  </body>
+</html>
+
+<style>
+  .not-found { padding-top: 120px; }
+  .not-found__inner { text-align: center; max-width: 480px; margin: 0 auto; }
+  .not-found__links { list-style: none; display: flex; gap: 16px; justify-content: center; margin: 24px 0 0; padding: 0; }
+  .not-found__links a { font-weight: 600; }
+</style>

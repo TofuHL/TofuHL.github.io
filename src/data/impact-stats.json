@@ -1,0 +1,10 @@
+{
+  "_comment": "Impact strip counters shown on the homepage. source/date required for every figure.",
+  "asOf": "2026-09-18",
+  "stats": [
+    { "id": "children", "value": 8940, "labelKey": "impact.children", "source": "Samma färger programme records, reviewed quarterly", "sourceDate": "2026-09-01" },
+    { "id": "meals", "value": 214300, "labelKey": "impact.meals", "source": "Partner delivery logs, Kharkiv & Kherson kitchens", "sourceDate": "2026-09-01" },
+    { "id": "kits", "value": 12680, "labelKey": "impact.kits", "source": "Samma färger logistics records", "sourceDate": "2026-08-15" },
+    { "id": "shelters", "value": 37, "labelKey": "impact.shelters", "source": "Joint site visits with local partners", "sourceDate": "2026-07-30" }
+  ]
+}

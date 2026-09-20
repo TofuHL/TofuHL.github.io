@@ -1,0 +1,10 @@
+{
+  "name": "Svenska Dagbladet",
+  "description": {
+    "en": "Media partner covering our field programmes and annual transparency reporting.",
+    "sv": "Mediepartner som bevakar våra fältprogram och årliga transparensrapportering.",
+    "uk": "Медіапартнер, який висвітлює наші польові програми та щорічну звітність про прозорість."
+  },
+  "url": "https://example.com/svd",
+  "kind": "media"
+}

@@ -1,0 +1,115 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getDict, type Locale } from '../i18n/ui';
+import legal from '../data/legal.json';
+
+export interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = getDict(locale);
+const p = dict.pages.contact;
+---
+
+<BaseLayout locale={locale} path="contact" title={p.title} description={p.metaDescription}>
+  <section class="section">
+    <div class="container contact__hero">
+      <p class="eyebrow">{p.heroEyebrow}</p>
+      <h1>{p.heroTitle}</h1>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container contact__grid">
+      <form class="contact__form" data-contact-form>
+        <h2>{p.formTitle}</h2>
+        <label>
+          <span>{p.nameLabel}</span>
+          <input type="text" name="name" required />
+        </label>
+        <label>
+          <span>{p.emailLabel}</span>
+          <input type="email" name="email" required />
+        </label>
+        <label>
+          <span>{p.subjectLabel}</span>
+          <select name="subject">
+            {p.subjectOptions.map((opt: string) => <option>{opt}</option>)}
+          </select>
+        </label>
+        <label>
+          <span>{p.messageLabel}</span>
+          <textarea name="message" rows="5" required></textarea>
+        </label>
+        <button type="submit" class="btn btn-primary">{p.submitLabel}</button>
+        <p
+          class="contact__form-note text-secondary"
+          data-contact-status
+          data-sent-text={p.formSent}
+          role="status"
+        >
+          {p.formNote}
+        </p>
+      </form>
+
+      <div class="contact__details">
+        <div>
+          <h2>{p.orgDetailsTitle}</h2>
+          <p>
+            {legal.registeredName}<br />
+            Org.nr {legal.orgNumber}<br />
+            Malmö, {legal.registrationCountry[locale] ?? legal.registrationCountry.en}
+          </p>
+          <p class="text-secondary">general@sammafarger.example</p>
+        </div>
+        <div>
+          <h2>{p.pressTitle}</h2>
+          <p class="text-secondary">press@sammafarger.example</p>
+        </div>
+        <div>
+          <h2>{p.socialTitle}</h2>
+          <ul class="contact__social">
+            <li><a href="https://instagram.com/" rel="me noopener" target="_blank">Instagram</a></li>
+            <li><a href="https://facebook.com/" rel="me noopener" target="_blank">Facebook</a></li>
+            <li><a href="https://linkedin.com/" rel="me noopener" target="_blank">LinkedIn</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact__hero { max-width: 780px; }
+  .contact__grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 56px; }
+  .contact__form { display: flex; flex-direction: column; gap: 16px; }
+  .contact__form label { display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; font-weight: 600; }
+  .contact__form input, .contact__form select, .contact__form textarea {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    font-family: var(--font-ui);
+    font-size: 15px;
+  }
+  .contact__form button { align-self: flex-start; margin-top: 4px; }
+  .contact__form-note { font-size: 12.5px; margin: 0; }
+  .contact__details { display: flex; flex-direction: column; gap: 32px; }
+  .contact__details h2 { font-size: 18px; margin-bottom: 8px; }
+  .contact__social { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+
+  @media (max-width: 820px) {
+    .contact__grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  const status = document.querySelector<HTMLElement>('[data-contact-status]');
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    // Front-end placeholder: wire to a real form backend (Formspree, a
+    // serverless function, or your CRM's inbound API) before launch.
+    form.reset();
+    if (status) status.textContent = status.dataset.sentText ?? '';
+  });
+</script>

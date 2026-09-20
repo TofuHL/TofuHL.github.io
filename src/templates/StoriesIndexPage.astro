@@ -1,0 +1,135 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PhotoPlaceholder from '../components/PhotoPlaceholder.astro';
+import { getDict, localizedPath, format, type Locale } from '../i18n/ui';
+
+export interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = getDict(locale);
+const p = dict.pages.stories;
+
+const allStories = (await getCollection('stories', ({ id }) => id.startsWith(`${locale}/`))).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+
+const programmes = Array.from(new Set(allStories.map((s) => s.data.programme)));
+const locations = Array.from(new Set(allStories.map((s) => s.data.location)));
+
+const dateFormat = new Intl.DateTimeFormat(locale === 'uk' ? 'uk-UA' : locale === 'sv' ? 'sv-SE' : 'en-GB', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout locale={locale} path="stories" title={p.title} description={p.metaDescription}>
+  <section class="section">
+    <div class="container stories__hero">
+      <p class="eyebrow">{p.heroEyebrow}</p>
+      <h1>{p.heroTitle}</h1>
+    </div>
+  </section>
+
+  <section class="section stories__list-section">
+    <div class="container">
+      <div class="stories__filters">
+        <label>
+          <span>{p.filterProgramme}</span>
+          <select data-filter="programme">
+            <option value="">{dict.common.filterAll}</option>
+            {programmes.map((prog) => (
+              <option value={prog}>{dict.programme[prog as keyof typeof dict.programme]}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          <span>{p.filterLocation}</span>
+          <select data-filter="location">
+            <option value="">{dict.common.filterAll}</option>
+            {locations.map((loc) => <option value={loc}>{loc}</option>)}
+          </select>
+        </label>
+      </div>
+
+      <div class="stories__grid" data-stories-grid>
+        {allStories.map((story) => {
+          const slug = story.slug.replace(`${locale}/`, '');
+          const byline = format(p.byline, {
+            author: story.data.author,
+            location: story.data.location,
+            date: dateFormat.format(story.data.date),
+          });
+          return (
+            <a
+              href={`${localizedPath(locale, 'stories')}${slug}/`}
+              class="stories__card fade-in-up"
+              data-programme={story.data.programme}
+              data-location={story.data.location}
+            >
+              <PhotoPlaceholder caption={story.data.photoAlt} ratio="16 / 10" />
+              <span class="badge">{dict.programme[story.data.programme as keyof typeof dict.programme]}</span>
+              <h2>{story.data.title}</h2>
+              <p class="text-secondary">{story.data.summary}</p>
+              <p class="stories__byline text-secondary">{byline}</p>
+            </a>
+          );
+        })}
+      </div>
+      <p class="text-secondary stories__empty" data-stories-empty hidden>{p.noResults}</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .stories__hero { max-width: 780px; }
+  .stories__filters { display: flex; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; }
+  .stories__filters label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; }
+  .stories__filters select {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 9px 12px;
+    font-family: var(--font-ui);
+    font-size: 14.5px;
+    min-width: 220px;
+  }
+  .stories__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .stories__card { display: flex; flex-direction: column; gap: 8px; text-decoration: none; color: var(--color-text); }
+  .stories__card h2 { font-size: 20px; margin: 6px 0 0; }
+  .stories__card .badge { margin-top: 12px; align-self: flex-start; }
+  .stories__byline { font-size: 12.5px; margin-top: auto; }
+  .stories__empty { margin-top: 24px; }
+
+  @media (max-width: 900px) {
+    .stories__grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) {
+    .stories__grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  const programmeFilter = document.querySelector<HTMLSelectElement>('[data-filter="programme"]');
+  const locationFilter = document.querySelector<HTMLSelectElement>('[data-filter="location"]');
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-stories-grid] > *'));
+  const emptyMsg = document.querySelector<HTMLElement>('[data-stories-empty]');
+
+  function applyFilters() {
+    const prog = programmeFilter?.value ?? '';
+    const loc = locationFilter?.value ?? '';
+    let visible = 0;
+    cards.forEach((card) => {
+      const matchesProg = !prog || card.dataset.programme === prog;
+      const matchesLoc = !loc || card.dataset.location === loc;
+      const show = matchesProg && matchesLoc;
+      card.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    if (emptyMsg) emptyMsg.hidden = visible !== 0;
+  }
+
+  programmeFilter?.addEventListener('change', applyFilters);
+  locationFilter?.addEventListener('change', applyFilters);
+</script>

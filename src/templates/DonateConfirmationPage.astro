@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getDict, localizedPath, type Locale } from '../i18n/ui';
+
+export interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = getDict(locale);
+const p = dict.confirmation;
+---
+
+<BaseLayout locale={locale} path="donate/confirmation" title={p.title} description={p.title} noindex>
+  <section class="section confirmation">
+    <div class="container confirmation__card">
+      <p class="eyebrow">{p.eyebrow}</p>
+      <h1>{p.title}</h1>
+      <p class="confirmation__summary" data-confirmation-summary></p>
+      <p class="text-secondary">{p.receiptSent}</p>
+
+      <div class="confirmation__monthly card" data-confirmation-monthly hidden>
+        <p>{p.monthlyPrompt}</p>
+        <button type="button" class="btn btn-secondary" data-open-donation>{p.monthlyCta}</button>
+      </div>
+
+      <div class="confirmation__actions">
+        <a href={localizedPath(locale, '')} class="btn btn-primary">{p.backHome}</a>
+      </div>
+
+      <p class="confirmation__disclaimer text-secondary">{p.devNote}</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .confirmation { padding-top: 64px; }
+  .confirmation__card { max-width: 560px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; gap: 16px; align-items: center; }
+  .confirmation__summary { font-size: 20px; font-family: var(--font-serif); }
+  .confirmation__monthly { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+  .confirmation__actions { margin-top: 12px; }
+  .confirmation__disclaimer { font-size: 12px; margin-top: 32px; border-top: 1px solid var(--color-border); padding-top: 20px; }
+</style>
+
+<script define:vars={{ perMonth: dict.common.perMonth }}>
+  const params = new URLSearchParams(window.location.search);
+  const amount = params.get('customAmount') || params.get('amount');
+  const frequency = params.get('frequency') || 'once';
+  const summary = document.querySelector('[data-confirmation-summary]');
+  if (summary && amount) {
+    summary.textContent = `${Number(amount).toLocaleString()} kr${frequency === 'monthly' ? perMonth : ''}`;
+  }
+  if (frequency !== 'monthly') {
+    document.querySelector('[data-confirmation-monthly]')?.removeAttribute('hidden');
+  }
+</script>

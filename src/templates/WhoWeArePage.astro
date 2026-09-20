@@ -1,0 +1,149 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PhotoPlaceholder from '../components/PhotoPlaceholder.astro';
+import ClosingCta from '../components/ClosingCta.astro';
+import { getDict, pick, type Locale } from '../i18n/ui';
+import legal from '../data/legal.json';
+import timeline from '../data/timeline.json';
+
+export interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = getDict(locale);
+const p = dict.pages.whoWeAre;
+
+const team = (await getCollection('team')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout locale={locale} path="who-we-are" title={p.title} description={p.metaDescription}>
+  <section class="section">
+    <div class="container who-we-are__hero">
+      <p class="eyebrow">{p.heroEyebrow}</p>
+      <h1>{p.heroTitle}</h1>
+    </div>
+  </section>
+
+  <section class="section who-we-are__story">
+    <div class="container who-we-are__story-grid">
+      <PhotoPlaceholder caption="Photo placeholder: Elin and Marcus in the Malmö office, consented image pending." ratio="4 / 3" />
+      <div>
+        <p class="eyebrow">{p.storyIntro}</p>
+        {p.storyParagraphs.map((para: string) => <p class="who-we-are__story-para">{para}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section who-we-are__team" aria-labelledby="team-title">
+    <div class="container">
+      <h2 id="team-title">{p.teamTitle}</h2>
+      <p class="text-secondary who-we-are__team-intro">{p.teamIntro}</p>
+      <div class="who-we-are__team-grid">
+        {team.map((member) => (
+          <div class="card who-we-are__member fade-in-up">
+            <PhotoPlaceholder caption={member.data.photoAlt[locale] ?? member.data.photoAlt.en} ratio="1 / 1" />
+            <h3>{member.data.name}</h3>
+            <p class="who-we-are__member-role">{member.data.role[locale] ?? member.data.role.en}</p>
+            <p class="text-secondary who-we-are__member-loc">{member.data.location}</p>
+            <p class="who-we-are__member-bio">{member.data.bio[locale] ?? member.data.bio.en}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section who-we-are__legal" aria-labelledby="legal-title">
+    <div class="container">
+      <h2 id="legal-title">{p.legalTitle}</h2>
+      <div class="who-we-are__legal-grid">
+        <dl class="who-we-are__legal-facts">
+          <div><dt>{p.legalLabels.registeredName}</dt><dd>{legal.registeredName}</dd></div>
+          <div><dt>{p.legalLabels.orgNumber}</dt><dd>{legal.orgNumber}</dd></div>
+          <div><dt>{p.legalLabels.country}</dt><dd>{legal.registrationCountry[locale] ?? legal.registrationCountry.en}</dd></div>
+          <div><dt>{p.legalLabels.authority}</dt><dd>{legal.registrationAuthority[locale] ?? legal.registrationAuthority.en}</dd></div>
+          <div><dt>{p.legalLabels.license}</dt><dd>{legal.fundraisingLicense[locale] ?? legal.fundraisingLicense.en}</dd></div>
+        </dl>
+        <div>
+          <p class="who-we-are__governance">{legal.governanceModel[locale] ?? legal.governanceModel.en}</p>
+          <h3>{p.boardTitle}</h3>
+          <ul class="who-we-are__board-list">
+            {legal.board.map((member) => (
+              <li><strong>{member.name}</strong> — {String(pick(dict, member.roleKey))}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section who-we-are__timeline" aria-labelledby="timeline-title">
+    <div class="container">
+      <h2 id="timeline-title">{p.timelineTitle}</h2>
+      <ol class="timeline">
+        {timeline.map((item) => (
+          <li class="timeline__item fade-in-up">
+            <span class="timeline__year">{item.year}</span>
+            <div>
+              <h3 class="timeline__title">{String(pick(dict, item.titleKey))}</h3>
+              <p class="text-secondary">{String(pick(dict, item.descKey))}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <ClosingCta locale={locale} />
+</BaseLayout>
+
+<style>
+  .who-we-are__hero { max-width: 780px; }
+  .who-we-are__story-grid {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .who-we-are__story-para { font-family: var(--font-serif); font-size: 18px; line-height: 1.7; }
+  .who-we-are__team-intro { max-width: 60ch; margin-bottom: 32px; }
+  .who-we-are__team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .who-we-are__member { display: flex; flex-direction: column; gap: 4px; }
+  .who-we-are__member h3 { margin-top: 16px; font-size: 18px; }
+  .who-we-are__member-role { color: var(--color-azure); font-weight: 600; font-size: 14px; margin: 0; }
+  .who-we-are__member-loc { font-size: 13px; margin: 0 0 8px; }
+  .who-we-are__member-bio { font-size: 14.5px; margin: 0; }
+
+  .who-we-are__legal { background: var(--color-bg-warm); }
+  .who-we-are__legal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    margin-top: 28px;
+  }
+  .who-we-are__legal-facts { margin: 0; display: flex; flex-direction: column; gap: 14px; }
+  .who-we-are__legal-facts div { display: flex; flex-direction: column; gap: 2px; border-bottom: 1px solid var(--color-border); padding-bottom: 12px; }
+  .who-we-are__legal-facts dt { font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--color-text-secondary); }
+  .who-we-are__legal-facts dd { margin: 0; font-weight: 600; }
+  .who-we-are__governance { font-size: 15px; }
+  .who-we-are__board-list { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 14.5px; }
+
+  .timeline { list-style: none; margin: 32px 0 0; padding: 0; display: flex; flex-direction: column; gap: 28px; }
+  .timeline__item { display: grid; grid-template-columns: 90px 1fr; gap: 20px; padding-bottom: 24px; border-bottom: 1px solid var(--color-border); }
+  .timeline__year { font-family: var(--font-serif); font-size: 22px; font-weight: 600; color: var(--color-azure); }
+  .timeline__title { margin-bottom: 4px; font-size: 18px; }
+
+  @media (max-width: 820px) {
+    .who-we-are__story-grid { grid-template-columns: 1fr; gap: 24px; }
+    .who-we-are__team-grid { grid-template-columns: 1fr 1fr; }
+    .who-we-are__legal-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 520px) {
+    .who-we-are__team-grid { grid-template-columns: 1fr; }
+    .timeline__item { grid-template-columns: 1fr; }
+  }
+</style>

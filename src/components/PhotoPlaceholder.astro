@@ -1,0 +1,12 @@
+---
+export interface Props {
+  caption: string;
+  ratio?: string;
+  class?: string;
+}
+const { caption, ratio = '4 / 3', class: className } = Astro.props;
+---
+
+<div class:list={['photo-placeholder', className]} style={{ '--ph-ratio': ratio }} role="img" aria-label={caption}>
+  <span class="ph-label">{caption}</span>
+</div>

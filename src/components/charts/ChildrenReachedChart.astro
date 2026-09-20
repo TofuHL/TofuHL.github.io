@@ -1,0 +1,104 @@
+---
+import { getDict, pick, type Locale } from '../../i18n/ui';
+import data from '../../data/chart-children-reached.json';
+
+export interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = getDict(locale);
+const numberFormat = new Intl.NumberFormat(locale === 'uk' ? 'uk-UA' : locale === 'sv' ? 'sv-SE' : 'en-GB');
+
+const programmes = data.programmes.map((p) => ({ ...p, label: String(pick(dict, p.labelKey)) }));
+const years = data.years.map((y) => String(y.year));
+const ariaLabel = `${dict.pages.impact.childrenReachedTitle}. ${programmes.map((p) => p.label).join(', ')}, ${years[0]}–${years[years.length - 1]}.`;
+---
+
+<div class="chart-block">
+  <h3>{dict.pages.impact.childrenReachedTitle}</h3>
+  <div class="chart-block__canvas-wrap chart-block__canvas-wrap--tall">
+    <canvas
+      id="chart-children-reached"
+      tabindex="0"
+      role="img"
+      aria-label={ariaLabel}
+      data-years={JSON.stringify(years)}
+      data-programmes={JSON.stringify(programmes.map((p) => ({ id: p.id, label: p.label })))}
+      data-series={JSON.stringify(data.years.map((y) => programmes.map((p) => y.values[p.id as keyof typeof y.values])))}
+    ></canvas>
+  </div>
+  <p class="chart-block__meta text-secondary">{dict.common.source}: {data.source} · {dict.common.updated} {data.asOf}</p>
+
+  <details class="chart-table">
+    <summary>{dict.common.viewDataTable}</summary>
+    <table class="data-table">
+      <caption class="visually-hidden">{dict.pages.impact.childrenReachedTitle}</caption>
+      <thead>
+        <tr>
+          <th scope="col">{dict.common.year}</th>
+          {programmes.map((p) => <th scope="col">{p.label}</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        {data.years.map((y) => (
+          <tr>
+            <th scope="row">{y.year}</th>
+            {programmes.map((p) => <td>{numberFormat.format(y.values[p.id as keyof typeof y.values])}</td>)}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </details>
+  <a class="csv-link" href="/data/children-reached.csv" download>{dict.common.downloadCsv}</a>
+</div>
+
+<script>
+  import Chart from 'chart.js/auto';
+  import { chartPalette, prefersReducedMotion } from './palette';
+
+  const canvas = document.getElementById('chart-children-reached') as HTMLCanvasElement | null;
+  if (canvas) {
+    const years = JSON.parse(canvas.dataset.years ?? '[]') as string[];
+    const programmes = JSON.parse(canvas.dataset.programmes ?? '[]') as { id: string; label: string }[];
+    const series = JSON.parse(canvas.dataset.series ?? '[]') as number[][];
+    const { colors, ink } = chartPalette();
+
+    new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: years,
+        datasets: programmes.map((p, i) => ({
+          label: p.label,
+          data: series.map((yearRow) => yearRow[i]),
+          backgroundColor: colors[i % colors.length],
+          borderRadius: 4,
+          categoryPercentage: 0.7,
+          barPercentage: 0.85,
+        })),
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: prefersReducedMotion() ? false : { duration: 700 },
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { color: ink.secondary, usePointStyle: true, boxWidth: 8 },
+          },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${ctx.dataset.label}: ${Number(ctx.raw).toLocaleString()}`,
+            },
+          },
+        },
+        scales: {
+          x: { ticks: { color: ink.secondary }, grid: { display: false } },
+          y: {
+            ticks: { color: ink.secondary, callback: (val) => Number(val).toLocaleString() },
+            grid: { color: ink.grid },
+          },
+        },
+      },
+    });
+  }
+</script>

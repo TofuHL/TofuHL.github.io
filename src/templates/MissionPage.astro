@@ -1,0 +1,128 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import UkraineMap from '../components/UkraineMap.astro';
+import ClosingCta from '../components/ClosingCta.astro';
+import { getDict, type Locale } from '../i18n/ui';
+import statsSources from '../data/stats-sources.json';
+import { pick } from '../i18n/ui';
+
+export interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = getDict(locale);
+const p = dict.pages.mission;
+---
+
+<BaseLayout locale={locale} path="mission" title={p.title} description={p.metaDescription}>
+  <section class="section">
+    <div class="container mission__hero">
+      <p class="eyebrow">{p.heroEyebrow}</p>
+      <h1>{p.heroTitle}</h1>
+    </div>
+  </section>
+
+  <section class="section mission__problem" aria-labelledby="problem-title">
+    <div class="container">
+      <h2 id="problem-title">{p.problemTitle}</h2>
+      <div class="mission__stat-grid">
+        {statsSources.map((s) => (
+          <div class="card mission__stat fade-in-up">
+            <span class="mission__stat-figure">{String(pick(dict, s.figureKey))}</span>
+            <p class="mission__stat-text">{String(pick(dict, s.textKey))}</p>
+            <p class="mission__stat-source text-secondary">
+              {dict.common.source}: <a href={s.url} rel="noopener" target="_blank">{s.source}</a> ({s.date})
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section mission__pillars" aria-labelledby="pillars-title">
+    <div class="container">
+      <h2 id="pillars-title">{p.pillarsTitle}</h2>
+      <p class="text-secondary mission__pillars-intro">{p.pillarsIntro}</p>
+      <div class="mission__pillars-list">
+        {p.pillars.map((pillar: any, i: number) => (
+          <div class="mission__pillar fade-in-up">
+            <span class="mission__pillar-index">{String(i + 1).padStart(2, '0')}</span>
+            <div>
+              <h3>{pillar.title}</h3>
+              <dl class="mission__pillar-facts">
+                <div><dt>{p.pillarLabels.what}</dt><dd>{pillar.what}</dd></div>
+                <div><dt>{p.pillarLabels.how}</dt><dd>{pillar.how}</dd></div>
+                <div><dt>{p.pillarLabels.who}</dt><dd>{pillar.who}</dd></div>
+                <div><dt>{p.pillarLabels.cost}</dt><dd>{pillar.cost}</dd></div>
+              </dl>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section mission__map" aria-labelledby="map-title">
+    <div class="container">
+      <h2 id="map-title">{p.mapTitle}</h2>
+      <p class="text-secondary">{p.mapIntro}</p>
+      <UkraineMap locale={locale} />
+    </div>
+  </section>
+
+  <section class="section mission__principles" aria-labelledby="principles-title">
+    <div class="container">
+      <h2 id="principles-title">{p.principlesTitle}</h2>
+      <p class="text-secondary mission__principles-intro">{p.principlesIntro}</p>
+      <div class="mission__principles-grid">
+        {p.principles.map((pr: any) => (
+          <div class="card fade-in-up">
+            <h3>{pr.title}</h3>
+            <p class="text-secondary">{pr.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <ClosingCta locale={locale} />
+</BaseLayout>
+
+<style>
+  .mission__hero { max-width: 780px; }
+  .mission__stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 28px; }
+  .mission__stat { display: flex; flex-direction: column; gap: 8px; }
+  .mission__stat-figure { font-family: var(--font-serif); font-size: 34px; font-weight: 600; color: var(--color-azure); }
+  .mission__stat-text { font-size: 15px; margin: 0; }
+  .mission__stat-source { font-size: 12px; margin: 0; }
+
+  .mission__pillars { background: var(--color-bg-warm); }
+  .mission__pillars-intro { max-width: 68ch; margin-bottom: 8px; }
+  .mission__pillars-list { display: flex; flex-direction: column; gap: 0; margin-top: 24px; }
+  .mission__pillar {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 20px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .mission__pillar:first-child { padding-top: 0; }
+  .mission__pillar-index { font-family: var(--font-serif); font-size: 26px; color: var(--color-yellow); font-weight: 600; }
+  .mission__pillar-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0 0; }
+  .mission__pillar-facts dt { font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--color-text-secondary); margin-bottom: 3px; }
+  .mission__pillar-facts dd { margin: 0; font-size: 14.5px; }
+
+  .mission__principles-intro { max-width: 68ch; margin-bottom: 8px; }
+  .mission__principles-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 24px; }
+
+  @media (max-width: 980px) {
+    .mission__stat-grid { grid-template-columns: 1fr 1fr; }
+    .mission__principles-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    .mission__stat-grid { grid-template-columns: 1fr; }
+    .mission__pillar-facts { grid-template-columns: 1fr; }
+    .mission__principles-grid { grid-template-columns: 1fr; }
+    .mission__pillar { grid-template-columns: 1fr; }
+  }
+</style>

@@ -1,0 +1,139 @@
+---
+import { getDict, localizedPath, type Locale } from '../i18n/ui';
+import legal from '../data/legal.json';
+
+export interface Props {
+  locale: Locale;
+  currentPath: string;
+}
+const { locale } = Astro.props;
+const dict = getDict(locale);
+
+const sectionLinks: { key: keyof typeof dict.nav; path: string }[] = [
+  { key: 'whoWeAre', path: 'who-we-are' },
+  { key: 'mission', path: 'mission' },
+  { key: 'impact', path: 'impact' },
+  { key: 'evidence', path: 'evidence' },
+  { key: 'getInvolved', path: 'get-involved' },
+  { key: 'stories', path: 'stories' },
+];
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__grid">
+    <div class="site-footer__about">
+      <a href={localizedPath(locale, '')} class="site-footer__brand">
+        <span class="site-header__mark" aria-hidden="true"></span>
+        {dict.meta.siteName}
+      </a>
+      <p class="text-secondary">{dict.footer.about}</p>
+      <p class="site-footer__orgline text-secondary">{dict.footer.orgLine}</p>
+    </div>
+
+    <div>
+      <h2 class="site-footer__heading">{dict.footer.sections}</h2>
+      <ul class="site-footer__list">
+        {sectionLinks.map((item) => (
+          <li><a href={localizedPath(locale, item.path)}>{dict.nav[item.key]}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="site-footer__heading">{dict.footer.legal}</h2>
+      <ul class="site-footer__list">
+        <li><a href={`${localizedPath(locale, 'transparency')}#privacy`}>{dict.footer.privacyPolicy}</a></li>
+        <li><a href={`${localizedPath(locale, 'transparency')}#safeguarding`}>{dict.footer.safeguardingPolicy}</a></li>
+        <li><a href={`${localizedPath(locale, 'transparency')}#complaints`}>{dict.footer.complaints}</a></li>
+        <li><button type="button" class="footer-link-btn" data-cookie-settings-open>{dict.footer.cookieSettings}</button></li>
+        <li><a href={localizedPath(locale, 'contact')}>{dict.nav.contact}</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="site-footer__heading">{dict.footer.followUs}</h2>
+      <ul class="site-footer__social">
+        <li><a href="https://instagram.com/" rel="me noopener" target="_blank">Instagram</a></li>
+        <li><a href="https://facebook.com/" rel="me noopener" target="_blank">Facebook</a></li>
+        <li><a href="https://linkedin.com/" rel="me noopener" target="_blank">LinkedIn</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container site-footer__bottom">
+    <p class="text-secondary">© {new Date().getFullYear()} {legal.registeredName}. {dict.footer.rights}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-bg-warm);
+    border-top: 1px solid var(--color-border);
+    padding: 64px 0 24px;
+  }
+  .site-footer__grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+  }
+  .site-footer__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--color-text);
+    text-decoration: none;
+    margin-bottom: 12px;
+  }
+  .site-footer__about p { max-width: 42ch; font-size: 14.5px; }
+  .site-footer__orgline { font-size: 13px; }
+  .site-footer__heading {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
+    color: var(--color-text-secondary);
+  }
+  .site-footer__list, .site-footer__social {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .site-footer__list a, .site-footer__social a {
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 14.5px;
+  }
+  .site-footer__list a:hover, .site-footer__social a:hover { color: var(--color-azure); }
+  .footer-link-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--color-text);
+    font-size: 14.5px;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    text-align: left;
+  }
+  .footer-link-btn:hover { color: var(--color-azure); }
+  .site-footer__bottom {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--color-border);
+  }
+  .site-footer__bottom p { margin: 0; font-size: 13px; }
+
+  @media (max-width: 800px) {
+    .site-footer__grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 520px) {
+    .site-footer__grid { grid-template-columns: 1fr; }
+  }
+</style>

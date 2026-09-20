@@ -1,0 +1,90 @@
+---
+import { getDict, type Locale } from '../i18n/ui';
+import fundraising from '../data/fundraising.json';
+
+export interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = getDict(locale);
+
+const { totalRaised, goal, donorCount, campaignEnd, asOf, currency } = fundraising;
+const percent = Math.min(100, Math.round((totalRaised / goal) * 100));
+const daysRemaining = Math.max(
+  0,
+  Math.ceil((new Date(campaignEnd).getTime() - new Date(asOf).getTime()) / (1000 * 60 * 60 * 24)),
+);
+const formatter = new Intl.NumberFormat(locale === 'uk' ? 'uk-UA' : locale === 'sv' ? 'sv-SE' : 'en-GB');
+---
+
+<section class="fundraising-bar fade-in-up" aria-labelledby="fundraising-bar-title">
+  <div class="container">
+    <h2 id="fundraising-bar-title" class="visually-hidden">{dict.fundraisingBar.title}</h2>
+    <div class="fundraising-bar__card">
+      <div class="fundraising-bar__track" role="img" aria-label={`${percent}% ${dict.common.of} ${dict.common.goal}`}>
+        <div class="fundraising-bar__fill" style={{ width: `${percent}%` }}></div>
+      </div>
+      <div class="fundraising-bar__stats">
+        <div class="fundraising-bar__stat">
+          <span class="fundraising-bar__value" data-countup={totalRaised}>{formatter.format(totalRaised)}</span>
+          <span class="fundraising-bar__unit">{currency}</span>
+          <span class="fundraising-bar__label text-secondary">
+            {dict.fundraisingBar.raisedLabel} {dict.common.of} {formatter.format(goal)} {currency} {dict.fundraisingBar.goalLabel}
+          </span>
+        </div>
+        <div class="fundraising-bar__stat">
+          <span class="fundraising-bar__value" data-countup={donorCount}>{formatter.format(donorCount)}</span>
+          <span class="fundraising-bar__label text-secondary">{dict.fundraisingBar.donorsLabel}</span>
+        </div>
+        <div class="fundraising-bar__stat">
+          <span class="fundraising-bar__value" data-countup={daysRemaining}>{formatter.format(daysRemaining)}</span>
+          <span class="fundraising-bar__label text-secondary">{dict.fundraisingBar.daysLabel}</span>
+        </div>
+      </div>
+      <p class="fundraising-bar__asof text-secondary">{dict.fundraisingBar.asOf}: {asOf}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .fundraising-bar { padding: 40px 0; }
+  .fundraising-bar__card {
+    background: var(--color-bg-warm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+  }
+  .fundraising-bar__track {
+    height: 12px;
+    border-radius: 999px;
+    background: var(--color-border);
+    overflow: hidden;
+    margin-bottom: 28px;
+  }
+  .fundraising-bar__fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-azure), var(--color-yellow));
+    border-radius: 999px;
+    transition: width 900ms ease;
+  }
+  .fundraising-bar__stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .fundraising-bar__stat { display: flex; flex-direction: column; }
+  .fundraising-bar__value {
+    font-family: var(--font-serif);
+    font-size: clamp(28px, 4vw, 38px);
+    font-weight: 600;
+    line-height: 1;
+  }
+  .fundraising-bar__unit { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
+  .fundraising-bar__label { font-size: 13.5px; margin-top: 6px; }
+  .fundraising-bar__asof { margin: 20px 0 0; font-size: 12px; }
+
+  @media (max-width: 640px) {
+    .fundraising-bar__stats { grid-template-columns: 1fr; gap: 18px; }
+    .fundraising-bar__card { padding: 24px; }
+  }
+</style>

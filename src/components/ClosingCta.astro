@@ -1,0 +1,30 @@
+---
+import { getDict, type Locale } from '../i18n/ui';
+
+export interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = getDict(locale);
+---
+
+<section class="closing-cta section">
+  <div class="container closing-cta__card">
+    <h2>{dict.closingCta.title}</h2>
+    <p class="text-secondary">{dict.closingCta.desc}</p>
+    <button type="button" class="btn btn-primary" data-open-donation>{dict.closingCta.donate}</button>
+  </div>
+</section>
+
+<style>
+  .closing-cta__card {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .closing-cta__card .btn { margin-top: 14px; }
+</style>

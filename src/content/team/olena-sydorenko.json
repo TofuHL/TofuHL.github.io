@@ -1,0 +1,21 @@
+{
+  "name": "Olena Sydorenko",
+  "role": {
+    "en": "Programme Director, Ukraine",
+    "sv": "Programdirektör, Ukraina",
+    "uk": "Директорка програм в Україні"
+  },
+  "bio": {
+    "en": "Based in Dnipro. Leads the field team and partner relationships across five oblasts. Previously managed education programmes for a Ukrainian children's charity.",
+    "sv": "Baserad i Dnipro. Leder fältteamet och partnerrelationerna i fem oblast. Har tidigare lett utbildningsprogram för en ukrainsk barnorganisation.",
+    "uk": "Базується в Дніпрі. Керує польовою командою та партнерськими стосунками у п'яти областях. Раніше керувала освітніми програмами української дитячої благодійної організації."
+  },
+  "location": "Dnipro, Ukraine",
+  "photoAlt": {
+    "en": "Portrait of Olena Sydorenko, Programme Director for Ukraine",
+    "sv": "Porträtt av Olena Sydorenko, programdirektör för Ukraina",
+    "uk": "Портрет Олени Сидоренко, директорки програм в Україні"
+  },
+  "order": 3,
+  "group": "ukraine"
+}

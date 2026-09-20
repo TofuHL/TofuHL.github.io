@@ -1,0 +1,230 @@
+---
+import { getDict, locales, localeNames, localizedPath, type Locale } from '../i18n/ui';
+
+export interface Props {
+  locale: Locale;
+  currentPath: string;
+}
+
+const { locale, currentPath } = Astro.props;
+const dict = getDict(locale);
+
+const navItems: { key: keyof typeof dict.nav; path: string }[] = [
+  { key: 'home', path: '' },
+  { key: 'whoWeAre', path: 'who-we-are' },
+  { key: 'mission', path: 'mission' },
+  { key: 'impact', path: 'impact' },
+  { key: 'evidence', path: 'evidence' },
+  { key: 'stories', path: 'stories' },
+  { key: 'getInvolved', path: 'get-involved' },
+  { key: 'transparency', path: 'transparency' },
+  { key: 'contact', path: 'contact' },
+];
+---
+
+<header class="site-header" data-site-header>
+  <div class="container site-header__inner">
+    <a href={localizedPath(locale, '')} class="site-header__brand">
+      <span class="site-header__mark" aria-hidden="true"></span>
+      {dict.meta.siteName}
+    </a>
+
+    <button type="button" class="site-header__menu-toggle" data-menu-toggle aria-expanded="false" aria-controls="primary-nav">
+      <span class="visually-hidden">{dict.nav.menu}</span>
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+        <path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+    </button>
+
+    <nav id="primary-nav" class="site-header__nav" data-primary-nav aria-label={dict.nav.menu}>
+      <ul>
+        {navItems.map((item) => {
+          const href = localizedPath(locale, item.path);
+          const isActive = currentPath === item.path;
+          return (
+            <li>
+              <a href={href} aria-current={isActive ? 'page' : undefined}>{dict.nav[item.key]}</a>
+            </li>
+          );
+        })}
+      </ul>
+
+      <div class="site-header__lang" data-lang-switcher>
+        <button type="button" class="site-header__lang-toggle" data-lang-toggle aria-expanded="false" aria-haspopup="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M1 8h14M8 1c1.8 2 2.8 4.5 2.8 7S9.8 13 8 15M8 1C6.2 3 5.2 5.5 5.2 8S6.2 13 8 15M1 8a7 7 0 1 0 14 0 7 7 0 0 0-14 0Z" stroke="currentColor" stroke-width="1.2"/></svg>
+          {locale.toUpperCase()}
+        </button>
+        <ul class="site-header__lang-menu" data-lang-menu hidden>
+          {locales.map((l) => (
+            <li>
+              <a href={localizedPath(l, currentPath)} lang={l} aria-current={l === locale ? 'true' : undefined}>
+                {localeNames[l]}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <button type="button" class="btn btn-primary site-header__donate" data-open-donation>
+        {dict.nav.donate}
+      </button>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+  .site-header__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 19px;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  .site-header__mark {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, var(--color-azure) 50%, var(--color-yellow) 50%);
+    flex-shrink: 0;
+  }
+  .site-header__menu-toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 8px;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+  .site-header__nav {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+  .site-header__nav > ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .site-header__nav a {
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 14.5px;
+    font-weight: 500;
+    padding: 6px 2px;
+    border-bottom: 2px solid transparent;
+  }
+  .site-header__nav a:hover { border-bottom-color: var(--color-yellow); }
+  .site-header__nav a[aria-current='page'] { color: var(--color-azure); border-bottom-color: var(--color-azure); }
+
+  .site-header__lang { position: relative; }
+  .site-header__lang-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 7px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+  .site-header__lang-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-card);
+    list-style: none;
+    margin: 0;
+    padding: 6px;
+    min-width: 140px;
+  }
+  .site-header__lang-menu a {
+    display: block;
+    padding: 8px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    text-decoration: none;
+    color: var(--color-text);
+  }
+  .site-header__lang-menu a:hover { background: var(--color-bg-warm); }
+  .site-header__lang-menu a[aria-current='true'] { color: var(--color-azure); font-weight: 600; }
+
+  .site-header__donate { padding: 10px 20px; font-size: 14.5px; }
+
+  @media (max-width: 900px) {
+    .site-header__menu-toggle { display: inline-flex; }
+    .site-header__nav {
+      position: fixed;
+      inset: 64px 0 0 0;
+      background: var(--color-bg);
+      flex-direction: column;
+      align-items: stretch;
+      padding: 20px var(--gutter) 32px;
+      gap: 18px;
+      overflow-y: auto;
+      display: none;
+    }
+    .site-header__nav.is-open { display: flex; }
+    .site-header__nav > ul { flex-direction: column; gap: 4px; }
+    .site-header__nav a { display: block; padding: 12px 4px; font-size: 17px; }
+    .site-header__donate { width: 100%; }
+    .site-header__lang-menu { position: static; box-shadow: none; margin-top: 8px; }
+  }
+</style>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const nav = document.querySelector<HTMLElement>('[data-primary-nav]');
+  toggle?.addEventListener('click', () => {
+    const isOpen = nav?.classList.toggle('is-open');
+    toggle.setAttribute('aria-expanded', String(Boolean(isOpen)));
+  });
+
+  const langToggle = document.querySelector<HTMLButtonElement>('[data-lang-toggle]');
+  const langMenu = document.querySelector<HTMLElement>('[data-lang-menu]');
+  langToggle?.addEventListener('click', () => {
+    const isHidden = langMenu?.hasAttribute('hidden');
+    if (isHidden) {
+      langMenu?.removeAttribute('hidden');
+      langToggle.setAttribute('aria-expanded', 'true');
+    } else {
+      langMenu?.setAttribute('hidden', '');
+      langToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+  document.addEventListener('click', (e) => {
+    const target = e.target as Node;
+    const wrapper = document.querySelector('[data-lang-switcher]');
+    if (wrapper && !wrapper.contains(target)) {
+      langMenu?.setAttribute('hidden', '');
+      langToggle?.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>

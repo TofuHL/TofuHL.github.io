@@ -1,0 +1,21 @@
+{
+  "name": "Ihor Melnyk",
+  "role": {
+    "en": "Logistics Lead, Ukraine",
+    "sv": "Logistikansvarig, Ukraina",
+    "uk": "Керівник логістики в Україні"
+  },
+  "bio": {
+    "en": "Oversees warehousing and last-mile delivery for all four programmes, working with municipal authorities and transport partners to keep routes safe and traceable.",
+    "sv": "Ansvarar för lager och sista mils-leveranser för alla fyra program, i samarbete med kommunala myndigheter och transportpartner för säkra och spårbara rutter.",
+    "uk": "Відповідає за складське зберігання та доставку \"останньої милі\" для всіх чотирьох програм, співпрацюючи з муніципальною владою та транспортними партнерами для безпечних і відстежуваних маршрутів."
+  },
+  "location": "Dnipro, Ukraine",
+  "photoAlt": {
+    "en": "Portrait of Ihor Melnyk, logistics lead in Ukraine",
+    "sv": "Porträtt av Ihor Melnyk, logistikansvarig i Ukraina",
+    "uk": "Портрет Ігоря Мельника, керівника логістики в Україні"
+  },
+  "order": 6,
+  "group": "ukraine"
+}
