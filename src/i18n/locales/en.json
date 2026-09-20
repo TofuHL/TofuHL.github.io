@@ -20,7 +20,6 @@
   },
   "footer": {
     "about": "Samma färger is an independent Swedish foundation (stiftelse) funding local partners delivering education, shelter, psychosocial support and nutrition programmes for children affected by the war in Ukraine.",
-    "orgLine": "Insamlingsstiftelsen Samma färger · Org.nr 802XXX-XXXX · Registered in Sweden",
     "sections": "Sections",
     "legal": "Legal",
     "privacyPolicy": "Privacy policy",
@@ -75,10 +74,11 @@
     "goalLabel": "goal",
     "donorsLabel": "donors",
     "daysLabel": "days left in this campaign period",
-    "asOf": "Figures updated"
+    "asOf": "Figures updated",
+    "notLaunched": "Fundraising hasn't launched yet — live totals will appear here once a campaign is running."
   },
   "impact": {
-    "eyebrow": "Since January 2025",
+    "eyebrow": "Our impact",
     "title": "What your support has funded so far",
     "children": "Children supported",
     "meals": "Meals delivered",
@@ -110,8 +110,8 @@
     "success": "Thanks — check your inbox to confirm your subscription."
   },
   "closingCta": {
-    "title": "Your support keeps a local team on the ground",
-    "desc": "One-off or monthly, every donation is reported against the campaigns above.",
+    "title": "Help fund local partners on the ground",
+    "desc": "One-off or monthly — every donation will be reported against real figures, not estimates.",
     "donate": "Donate now"
   },
   "donationPanel": {
@@ -157,19 +157,19 @@
       "title": "Who We Are",
       "metaDescription": "The founding story, team, legal identity and governance of Samma färger, a Swedish foundation funding programmes for children affected by the war in Ukraine.",
       "heroEyebrow": "Our story",
-      "heroTitle": "We started at a kitchen table in Malmö. We're still run the same way.",
-      "storyIntro": "In first person, from co-founder Elin Håkansson:",
-      "storyParagraphs": [
-        "In March 2022 I was coordinating logistics for a Red Cross chapter in Skåne, watching convoys of donated goods leave Sweden with almost no visibility into what happened to them after the border. Friends kept asking where to send money instead — and I didn't have a good answer.",
-        "Marcus, who audited small nonprofits for a living, and I started keeping a shared spreadsheet: what we'd raised, who received it, what it bought. We showed it to the first twenty donors unedited. Nobody unsubscribed.",
-        "By late 2022 we'd registered as a foundation and set up our first standing partnership, with a small education charity in Dnipro run by people who'd been doing this work long before we existed. That relationship — local partners leading delivery, us funding and reporting — is still the model today.",
-        "We're not the largest organisation working on this. We're trying to be one of the most legible: you should be able to look at any number on this site and find out exactly where it came from."
-      ],
+      "heroTitle": "Who We Are",
+      "storyIntro": "[Placeholder — add your real founding story here]",
+      "storyPlaceholder": "This section should tell your organisation's real founding story, in plain prose and first person where possible, naming real founders. Do not publish invented history — replace this placeholder before launch.",
+      "storyParagraphs": [],
       "teamTitle": "Team",
-      "teamIntro": "Six people across two countries, plus the local partner staff who do most of the actual delivery work.",
+      "teamIntro": "Meet the people delivering our programmes — including local partner staff, not only founders.",
+      "teamEmpty": "Team bios will appear here once added — see the README for how to add a team member.",
       "legalTitle": "Legal identity & governance",
+      "legalEmpty": "Legal registration details will appear here once the organisation's registration is complete.",
       "timelineTitle": "Timeline",
+      "timelineEmpty": "This organisation's timeline will appear here as milestones happen.",
       "boardTitle": "Board",
+      "boardEmpty": "Board members will be listed here once appointed.",
       "legalLabels": {
         "registeredName": "Registered name",
         "orgNumber": "Organisation number",
@@ -192,7 +192,7 @@
           "title": "Education continuity",
           "what": "School kits, replacement stationery, and small grants to schools for heating and repair so classrooms can reopen sooner.",
           "how": "Needs are identified jointly with school administrators; kits are packed regionally and distributed at the school or a community centre.",
-          "who": "Delivered by four regional partner organisations, coordinated by our Programme Director in Dnipro.",
+          "who": "[Add the local partner organisation(s) delivering this programme once a partnership is confirmed.]",
           "cost": "Roughly 250 kr per child per term for a standard kit; larger school-repair grants are assessed individually and require three competing quotes."
         },
         {
@@ -200,7 +200,7 @@
           "title": "Shelter & safety",
           "what": "Weatherproofing and basic equipping of shared basement shelters used during air-raid alerts.",
           "how": "Sites are prioritised using housing-administration data on families with young children, then insulated, lit, and stocked with first aid supplies.",
-          "who": "Delivered with municipal facilities staff and our Kharkiv-based field coordinator.",
+          "who": "[Add the local partner organisation(s) delivering this programme once a partnership is confirmed.]",
           "cost": "Roughly 2,000 kr per shelter for a full weatherproofing kit."
         },
         {
@@ -208,7 +208,7 @@
           "title": "Psychosocial support",
           "what": "Structured, supervised play and group sessions for children, run by trained local facilitators.",
           "how": "Sessions run several afternoons a week in renovated courtyard spaces or community centres; no counting or press access during sessions.",
-          "who": "Delivered by the Dnipro Children's Fund and two smaller partners in Zaporizhzhia and Lviv.",
+          "who": "[Add the local partner organisation(s) delivering this programme once a partnership is confirmed.]",
           "cost": "Roughly 750 kr funds one week of sessions for a group of eight children."
         },
         {
@@ -216,13 +216,14 @@
           "title": "Nutrition",
           "what": "Daily hot meals prepared and distributed through community-run kitchens.",
           "how": "Kitchens purchase ingredients locally under our procurement policy and report meal counts weekly.",
-          "who": "Delivered by the Kharkiv Relief Kitchen Network and partner kitchens in Kherson and Chernihiv.",
+          "who": "[Add the local partner organisation(s) delivering this programme once a partnership is confirmed.]",
           "cost": "Roughly 9 kr per meal, including preparation and distribution."
         }
       ],
       "pillarLabels": { "what": "What", "how": "How", "who": "Who delivers it", "cost": "What it costs" },
       "mapTitle": "Where we work",
-      "mapIntro": "Active locations as of the date below. This is a simplified orientation map, not a precise boundary map.",
+      "mapIntro": "This is a simplified orientation map, not a precise boundary map. Active locations will be marked here once programmes are confirmed running.",
+      "mapEmpty": "No active locations to show yet.",
       "principlesTitle": "Our principles",
       "principlesIntro": "These four commitments apply to every partnership, every campaign, and every piece of content we publish.",
       "principles": [
@@ -241,7 +242,8 @@
       "allocationTitle": "Allocation of funds",
       "campaignProgressTitle": "Campaign progress",
       "childrenReachedTitle": "Children reached by programme, by year",
-      "accessibilityNote": "Every chart on this page is keyboard-focusable, includes a text alternative in a data table, and does not rely on colour alone to convey meaning."
+      "accessibilityNote": "Every chart on this page is keyboard-focusable, includes a text alternative in a data table, and does not rely on colour alone to convey meaning.",
+      "noDataYet": "No data yet — this chart will populate once there are real figures to show."
     },
     "evidence": {
       "title": "Evidence of Support",
@@ -249,14 +251,19 @@
       "heroEyebrow": "Don't take our word for it",
       "heroTitle": "What our partners, donors and the press say — and the paperwork behind it",
       "partnersTitle": "Partner organisations",
+      "partnersEmpty": "Partner organisations will be listed here once formal partnerships are confirmed.",
       "testimonialsTitle": "In their own words",
+      "testimonialsEmpty": "Testimonials from donors, partners and supported families will appear here as they're collected — always with consent.",
       "pressTitle": "Press coverage",
+      "pressEmpty": "No press coverage yet. Real coverage will be listed here, each with a link to the original outlet.",
       "fieldEvidenceTitle": "Field evidence",
-      "fieldEvidenceIntro": "Delivery photographs and logistics summaries, published with partner and guardian consent. Full delivery receipts are available to journalists and institutional donors on request.",
+      "fieldEvidenceIntro": "Once programmes are delivering, this section will show delivery photographs and logistics summaries published with partner and guardian consent.",
+      "fieldEvidenceEmpty": "No field evidence yet — there is no programme delivery to report on.",
       "financialTitle": "Financial transparency",
-      "financialIntro": "Audited annual accounts, our fundraising registry listing, and a plain-language summary of how funds are allocated.",
+      "financialIntro": "Once available, this section will link to audited annual accounts, our fundraising registry listing, and a plain-language summary of how funds are allocated.",
+      "reportsEmpty": "No reports have been published yet. Audited annual accounts and registry listings will be linked here once they exist.",
       "endorsementsTitle": "Endorsements",
-      "endorsementsNote": "See press coverage above; formal institutional endorsements will be added here as they are secured."
+      "endorsementsNote": "No endorsements yet. Formal institutional endorsements will be added here as they are secured."
     },
     "getInvolved": {
       "title": "Get Involved",
@@ -266,12 +273,12 @@
       "options": [
         { "title": "One-off donation", "desc": "A single gift, any amount, processed instantly by card, Apple Pay, Google Pay, PayPal or Swish.", "cta": "Donate once" },
         { "title": "Monthly giving", "desc": "A recurring gift lets us commit to programmes over a full school term or winter, not just a single delivery.", "cta": "Become a monthly donor" },
-        { "title": "Corporate partnership & matched giving", "desc": "We work with companies on payroll giving, matched donations, and in-kind logistics support like the one below.", "cta": "Talk to our partnerships team" },
-        { "title": "In-kind donations", "desc": "We currently have open logistics capacity for bulk stationery, cold-weather clothing and hygiene items sourced within the EU.", "cta": "Discuss an in-kind gift" },
-        { "title": "Volunteer", "desc": "Remote roles in translation, grant writing and finance review; in-person roles with our Sweden-based events team.", "cta": "See volunteer roles" },
-        { "title": "Start your own fundraiser", "desc": "Birthday collections, school bake sales, marathon fundraising pages — we provide a toolkit and a dedicated tracking page.", "cta": "Start a fundraiser" }
+        { "title": "Corporate partnership & matched giving", "desc": "Get in touch to discuss payroll giving, matched donations, or in-kind logistics support for your company.", "cta": "Talk to us about partnering" },
+        { "title": "In-kind donations", "desc": "If you can offer bulk stationery, cold-weather clothing or hygiene items sourced within the EU, get in touch to discuss logistics.", "cta": "Discuss an in-kind gift" },
+        { "title": "Volunteer", "desc": "Get in touch about remote roles (translation, grant writing, finance review) or in-person roles as they open up.", "cta": "Ask about volunteering" },
+        { "title": "Start your own fundraiser", "desc": "Birthday collections, school bake sales, marathon fundraising pages — get in touch and we'll help you set one up.", "cta": "Start a fundraiser" }
       ],
-      "corporateNote": "Corporate and matched-giving enquiries are usually answered within two business days by our Head of Donor Relations."
+      "corporateNote": "Corporate and matched-giving enquiries: contact us via the form on the Contact page."
     },
     "stories": {
       "title": "Stories & News",
@@ -289,9 +296,9 @@
       "heroEyebrow": "Read before you give, not after",
       "heroTitle": "Where every krona goes",
       "allocationTitle": "Fund allocation, explained",
-      "allocationBody": "83% of every krona goes directly to programme delivery — school kits, shelter materials, meals, and psychosocial facilitator salaries paid to local partners. 9% covers administration: audit, insurance, financial systems and core staff not tied to a single programme. 8% covers fundraising: payment processing fees, campaign materials, and donor communications. We publish this split every quarter, not just annually, and it is cross-checked against our audited accounts.",
-      "overheadTitle": "Why we don't chase a 'zero overhead' claim",
-      "overheadBody": "Some organisations advertise that '100% of your donation reaches the field' by having a separate fund cover salaries and audit costs. We don't do that — it just moves the same costs off the page. Our 9% administration figure is the real, audited cost of running this organisation responsibly, including the audit that lets you verify every other number on this site.",
+      "allocationBody": "No funds have been raised or spent yet, so there is no real allocation split to report. Once fundraising begins, this section will state exactly what share of every krona goes to programme delivery, administration and fundraising costs, updated every quarter and cross-checked against audited accounts — not just claimed once a year.",
+      "overheadTitle": "Why we won't chase a 'zero overhead' claim",
+      "overheadBody": "Some organisations advertise that '100% of your donation reaches the field' by having a separate fund cover salaries and audit costs. We won't do that — it just moves the same costs off the page. Whatever our real administration percentage turns out to be, we'll publish it as the actual, audited cost of running this organisation responsibly, including the audit that lets you verify every other number on this site.",
       "procurementTitle": "Procurement policy",
       "procurementBody": "Purchases above 15,000 SEK require three competing quotes, documented in our finance system. We prioritise Ukrainian suppliers for goods available locally, both to support the local economy and to reduce cross-border logistics risk. No board member, staff member or their immediate family may hold a financial interest in a supplier we use.",
       "safeguardingTitle": "Safeguarding policy",
@@ -299,7 +306,7 @@
       "complaintsTitle": "Complaints procedure",
       "complaintsBody": "If something about our fundraising, a programme, or the conduct of any staff member or partner concerns you, contact complaints@sammafarger.example directly, or use the contact form and select 'Complaint'. We acknowledge every complaint within two business days and a board member reviews any safeguarding-related complaint personally.",
       "reportsTitle": "Downloadable reports",
-      "reportsIntro": "Annual reports and audit statements, most recent first.",
+      "reportsIntro": "Annual reports and audit statements will be listed here, most recent first, once they exist.",
       "privacyTitle": "Privacy policy",
       "privacyBody": "We collect only what we need: your contact details if you donate or subscribe, and — only after you actively consent via the cookie banner — privacy-respecting, non-tracking analytics on which pages are used. We never sell or share personal data with third parties for marketing. Payment card details are handled entirely by Stripe and PayPal; we never see or store them. You can request a copy of, correction to, or deletion of your data at any time by emailing privacy@sammafarger.example, in line with the EU GDPR and the Swedish Data Protection Act."
     },
@@ -339,13 +346,6 @@
     "psychosocial": "Psychosocial support",
     "nutrition": "Nutrition"
   },
-  "timeline": {
-    "2022": { "title": "Founded", "desc": "Elin and Marcus register Samma färger as a Swedish foundation after months of informal fundraising among friends and colleagues." },
-    "2023": { "title": "First standing partnership", "desc": "Formal partnership agreement signed with the Dnipro Children's Fund; first quarterly transparency report published." },
-    "2024": { "title": "Expansion to four programmes", "desc": "Shelter weatherproofing and community nutrition added alongside education and psychosocial support; second and third partner organisations onboarded." },
-    "2025": { "title": "8,000+ children supported", "desc": "Cumulative funds raised pass 3 million kr; first corporate matched-giving partnership signed." },
-    "2026": { "title": "Five oblasts, eight partner sites", "desc": "Programme presence extends to Zaporizhzhia and Lviv; site redesigned for full financial transparency." }
-  },
   "board": {
     "chair": "Chair",
     "treasurer": "Treasurer",
@@ -361,19 +361,5 @@
     "odesa": "Odesa",
     "lviv": "Lviv",
     "zaporizhzhia": "Zaporizhzhia"
-  },
-  "stat": {
-    "displacedChildren": {
-      "figure": "1.7 million+",
-      "text": "children internally displaced or living as refugees since 2022"
-    },
-    "schoolsDamaged": {
-      "figure": "3,800+",
-      "text": "schools damaged or destroyed, disrupting continuity of education"
-    },
-    "psychosocialNeed": {
-      "figure": "~1 in 2",
-      "text": "children in affected regions show signs of war-related psychological distress"
-    }
   }
 }

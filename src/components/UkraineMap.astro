@@ -1,6 +1,7 @@
 ---
 import { getDict, pick, type Locale } from '../i18n/ui';
-import oblasts from '../data/oblasts.json';
+import oblastsData from '../data/oblasts.json';
+import type { OblastLocation } from '../data/types';
 
 export interface Props {
   locale: Locale;
@@ -8,6 +9,7 @@ export interface Props {
 const { locale } = Astro.props;
 const dict = getDict(locale);
 
+const oblasts = { locations: oblastsData.locations as OblastLocation[] };
 const locations = oblasts.locations.map((loc) => ({
   ...loc,
   name: String(pick(dict, loc.nameKey)),
@@ -23,7 +25,10 @@ const locations = oblasts.locations.map((loc) => ({
     class="ukraine-map__svg"
   >
     <title id="ukraine-map-title">{dict.pages.mission.mapTitle}</title>
-    <desc id="ukraine-map-desc">{dict.pages.mission.mapIntro} {locations.map((l) => l.name).join(', ')}.</desc>
+    <desc id="ukraine-map-desc">
+      {dict.pages.mission.mapIntro}
+      {locations.length > 0 ? ` ${locations.map((l) => l.name).join(', ')}.` : ''}
+    </desc>
 
     <path
       class="ukraine-map__silhouette"
@@ -45,15 +50,19 @@ const locations = oblasts.locations.map((loc) => ({
     ))}
   </svg>
 
-  <ul class="ukraine-map__list">
-    {locations.map((loc) => (
-      <li>
-        <span class="ukraine-map__list-dot" aria-hidden="true"></span>
-        <strong>{loc.name}</strong>
-        <span class="text-secondary">— {loc.programmeLabels.join(', ')}</span>
-      </li>
-    ))}
-  </ul>
+  {locations.length > 0 ? (
+    <ul class="ukraine-map__list">
+      {locations.map((loc) => (
+        <li>
+          <span class="ukraine-map__list-dot" aria-hidden="true"></span>
+          <strong>{loc.name}</strong>
+          <span class="text-secondary">— {loc.programmeLabels.join(', ')}</span>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p class="text-secondary ukraine-map__empty">{dict.pages.mission.mapEmpty}</p>
+  )}
 </div>
 
 <style>
@@ -86,6 +95,7 @@ const locations = oblasts.locations.map((loc) => ({
   .ukraine-map__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
   .ukraine-map__list li { font-size: 14.5px; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
   .ukraine-map__list-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--color-azure); flex-shrink: 0; }
+  .ukraine-map__empty { margin: 0; }
 
   @media (max-width: 760px) {
     .ukraine-map { grid-template-columns: 1fr; }

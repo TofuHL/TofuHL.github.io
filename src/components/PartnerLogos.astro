@@ -10,22 +10,24 @@ const dict = getDict(locale);
 const partners = await getCollection('partners');
 ---
 
-<section class="partner-logos section" aria-labelledby="partner-logos-title">
-  <div class="container">
-    <p class="eyebrow">{dict.partners.eyebrow}</p>
-    <h2 id="partner-logos-title" class="visually-hidden">{dict.partners.title}</h2>
-    <ul class="partner-logos__row">
-      {partners.map((partner) => (
-        <li class="partner-logos__item" title={partner.data.description[locale] ?? partner.data.description.en}>
-          <span class="partner-logos__mark" aria-hidden="true">
-            {partner.data.name.slice(0, 2).toUpperCase()}
-          </span>
-          <span class="partner-logos__name">{partner.data.name}</span>
-        </li>
-      ))}
-    </ul>
-  </div>
-</section>
+{partners.length > 0 && (
+  <section class="partner-logos section" aria-labelledby="partner-logos-title">
+    <div class="container">
+      <p class="eyebrow">{dict.partners.eyebrow}</p>
+      <h2 id="partner-logos-title" class="visually-hidden">{dict.partners.title}</h2>
+      <ul class="partner-logos__row">
+        {partners.map((partner) => (
+          <li class="partner-logos__item" title={partner.data.description[locale] ?? partner.data.description.en}>
+            <span class="partner-logos__mark" aria-hidden="true">
+              {partner.data.name.slice(0, 2).toUpperCase()}
+            </span>
+            <span class="partner-logos__name">{partner.data.name}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
 
 <style>
   .partner-logos__row {

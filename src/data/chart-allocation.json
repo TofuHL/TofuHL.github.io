@@ -1,10 +1,10 @@
 {
-  "_comment": "Donut chart: allocation of funds. Percentages must sum to 100 and are cross-checked against the annual report.",
-  "source": "Annual report 2025, audited financial statements",
-  "asOf": "2026-03-31",
+  "_comment": "PLACEHOLDER — no audited accounts exist yet. Replace `percent` values with the real split from your audited annual report once one exists, and cite it properly below. Do not publish invented percentages as if audited.",
+  "source": null,
+  "asOf": null,
   "segments": [
-    { "id": "programme", "labelKey": "alloc.programme", "percent": 83 },
-    { "id": "admin", "labelKey": "alloc.admin", "percent": 9 },
-    { "id": "fundraising", "labelKey": "alloc.fundraising", "percent": 8 }
+    { "id": "programme", "labelKey": "alloc.programme", "percent": 0 },
+    { "id": "admin", "labelKey": "alloc.admin", "percent": 0 },
+    { "id": "fundraising", "labelKey": "alloc.fundraising", "percent": 0 }
   ]
 }

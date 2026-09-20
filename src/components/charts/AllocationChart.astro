@@ -9,49 +9,60 @@ const { locale } = Astro.props;
 const dict = getDict(locale);
 
 const segments = data.segments.map((s) => ({ ...s, label: String(pick(dict, s.labelKey)) }));
-const ariaLabel = `${dict.pages.impact.allocationTitle}: ${segments.map((s) => `${s.label} ${s.percent}%`).join(', ')}.`;
+const hasData = segments.some((s) => s.percent > 0);
+const ariaLabel = hasData
+  ? `${dict.pages.impact.allocationTitle}: ${segments.map((s) => `${s.label} ${s.percent}%`).join(', ')}.`
+  : dict.pages.impact.noDataYet;
 ---
 
 <div class="chart-block">
   <h3>{dict.pages.impact.allocationTitle}</h3>
-  <div class="chart-block__donut-grid">
-    <div class="chart-block__canvas-wrap chart-block__canvas-wrap--donut">
-      <canvas
-        id="chart-allocation"
-        tabindex="0"
-        role="img"
-        aria-label={ariaLabel}
-        data-labels={JSON.stringify(segments.map((s) => s.label))}
-        data-values={JSON.stringify(segments.map((s) => s.percent))}
-      ></canvas>
-    </div>
-    <ul class="chart-block__legend" aria-hidden="true">
-      {segments.map((s, i) => (
-        <li>
-          <span class="chart-block__swatch" data-swatch-index={i}></span>
-          <span class="chart-block__legend-label">{s.label}</span>
-          <span class="chart-block__legend-value">{s.percent}%</span>
-        </li>
-      ))}
-    </ul>
-  </div>
-  <p class="chart-block__meta text-secondary">{dict.common.source}: {data.source} · {dict.common.updated} {data.asOf}</p>
+  {hasData ? (
+    <>
+      <div class="chart-block__donut-grid">
+        <div class="chart-block__canvas-wrap chart-block__canvas-wrap--donut">
+          <canvas
+            id="chart-allocation"
+            tabindex="0"
+            role="img"
+            aria-label={ariaLabel}
+            data-labels={JSON.stringify(segments.map((s) => s.label))}
+            data-values={JSON.stringify(segments.map((s) => s.percent))}
+          ></canvas>
+        </div>
+        <ul class="chart-block__legend" aria-hidden="true">
+          {segments.map((s, i) => (
+            <li>
+              <span class="chart-block__swatch" data-swatch-index={i}></span>
+              <span class="chart-block__legend-label">{s.label}</span>
+              <span class="chart-block__legend-value">{s.percent}%</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      {data.source && (
+        <p class="chart-block__meta text-secondary">{dict.common.source}: {data.source} · {dict.common.updated} {data.asOf}</p>
+      )}
 
-  <details class="chart-table">
-    <summary>{dict.common.viewDataTable}</summary>
-    <table class="data-table">
-      <caption class="visually-hidden">{dict.pages.impact.allocationTitle}</caption>
-      <thead>
-        <tr><th scope="col">{dict.common.category}</th><th scope="col">{dict.common.percent}</th></tr>
-      </thead>
-      <tbody>
-        {segments.map((s) => (
-          <tr><th scope="row">{s.label}</th><td>{s.percent}%</td></tr>
-        ))}
-      </tbody>
-    </table>
-  </details>
-  <a class="csv-link" href="/data/allocation.csv" download>{dict.common.downloadCsv}</a>
+      <details class="chart-table">
+        <summary>{dict.common.viewDataTable}</summary>
+        <table class="data-table">
+          <caption class="visually-hidden">{dict.pages.impact.allocationTitle}</caption>
+          <thead>
+            <tr><th scope="col">{dict.common.category}</th><th scope="col">{dict.common.percent}</th></tr>
+          </thead>
+          <tbody>
+            {segments.map((s) => (
+              <tr><th scope="row">{s.label}</th><td>{s.percent}%</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </details>
+      <a class="csv-link" href="/data/allocation.csv" download>{dict.common.downloadCsv}</a>
+    </>
+  ) : (
+    <p class="text-secondary chart-block__empty">{dict.pages.impact.noDataYet}</p>
+  )}
 </div>
 
 <script>
@@ -118,4 +129,6 @@ const ariaLabel = `${dict.pages.impact.allocationTitle}: ${segments.map((s) => `
   @media (max-width: 560px) {
     .chart-block__donut-grid { grid-template-columns: 1fr; }
   }
+
+  .chart-block__empty { margin: 20px 0 0; padding: 32px; text-align: center; background: var(--color-bg-warm); border: 1px dashed var(--color-border); border-radius: var(--radius-md); }
 </style>

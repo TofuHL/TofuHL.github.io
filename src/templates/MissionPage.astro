@@ -3,7 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import UkraineMap from '../components/UkraineMap.astro';
 import ClosingCta from '../components/ClosingCta.astro';
 import { getDict, type Locale } from '../i18n/ui';
-import statsSources from '../data/stats-sources.json';
+import statsSourcesData from '../data/stats-sources.json';
+import type { StatSource } from '../data/types';
 import { pick } from '../i18n/ui';
 
 export interface Props {
@@ -12,6 +13,7 @@ export interface Props {
 const { locale } = Astro.props;
 const dict = getDict(locale);
 const p = dict.pages.mission;
+const statsSources = statsSourcesData as StatSource[];
 ---
 
 <BaseLayout locale={locale} path="mission" title={p.title} description={p.metaDescription}>
@@ -22,22 +24,24 @@ const p = dict.pages.mission;
     </div>
   </section>
 
-  <section class="section mission__problem" aria-labelledby="problem-title">
-    <div class="container">
-      <h2 id="problem-title">{p.problemTitle}</h2>
-      <div class="mission__stat-grid">
-        {statsSources.map((s) => (
-          <div class="card mission__stat fade-in-up">
-            <span class="mission__stat-figure">{String(pick(dict, s.figureKey))}</span>
-            <p class="mission__stat-text">{String(pick(dict, s.textKey))}</p>
-            <p class="mission__stat-source text-secondary">
-              {dict.common.source}: <a href={s.url} rel="noopener" target="_blank">{s.source}</a> ({s.date})
-            </p>
-          </div>
-        ))}
+  {statsSources.length > 0 && (
+    <section class="section mission__problem" aria-labelledby="problem-title">
+      <div class="container">
+        <h2 id="problem-title">{p.problemTitle}</h2>
+        <div class="mission__stat-grid">
+          {statsSources.map((s) => (
+            <div class="card mission__stat fade-in-up">
+              <span class="mission__stat-figure">{String(pick(dict, s.figureKey))}</span>
+              <p class="mission__stat-text">{String(pick(dict, s.textKey))}</p>
+              <p class="mission__stat-source text-secondary">
+                {dict.common.source}: <a href={s.url} rel="noopener" target="_blank">{s.source}</a> ({s.date})
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  )}
 
   <section class="section mission__pillars" aria-labelledby="pillars-title">
     <div class="container">

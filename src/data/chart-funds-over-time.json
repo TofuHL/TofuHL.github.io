@@ -1,29 +1,7 @@
 {
-  "_comment": "Cumulative funds raised over time, monthly granularity, SEK.",
+  "_comment": "PLACEHOLDER — no funds have been raised yet, so there is no real time series. Replace `months` with real monthly cumulative totals once fundraising begins.",
   "currency": "SEK",
-  "source": "Samma färger finance system export",
-  "asOf": "2026-09-18",
-  "months": [
-    { "month": "2025-01", "cumulative": 210000 },
-    { "month": "2025-02", "cumulative": 430000 },
-    { "month": "2025-03", "cumulative": 690000 },
-    { "month": "2025-04", "cumulative": 910000 },
-    { "month": "2025-05", "cumulative": 1180000 },
-    { "month": "2025-06", "cumulative": 1420000 },
-    { "month": "2025-07", "cumulative": 1650000 },
-    { "month": "2025-08", "cumulative": 1890000 },
-    { "month": "2025-09", "cumulative": 2160000 },
-    { "month": "2025-10", "cumulative": 2480000 },
-    { "month": "2025-11", "cumulative": 2860000 },
-    { "month": "2025-12", "cumulative": 3320000 },
-    { "month": "2026-01", "cumulative": 3540000 },
-    { "month": "2026-02", "cumulative": 3690000 },
-    { "month": "2026-03", "cumulative": 3810000 },
-    { "month": "2026-04", "cumulative": 3920000 },
-    { "month": "2026-05", "cumulative": 4010000 },
-    { "month": "2026-06", "cumulative": 4070000 },
-    { "month": "2026-07", "cumulative": 4110000 },
-    { "month": "2026-08", "cumulative": 4150000 },
-    { "month": "2026-09", "cumulative": 4187650 }
-  ]
+  "source": null,
+  "asOf": null,
+  "months": []
 }

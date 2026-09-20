@@ -1,17 +1,12 @@
 {
-  "_comment": "Grouped bar chart: children reached by programme, by year.",
-  "source": "Samma färger programme monitoring data",
-  "asOf": "2026-08-31",
+  "_comment": "PLACEHOLDER — no programme monitoring data exists yet. Replace `years` with real annual figures once programmes are running and reporting.",
+  "source": null,
+  "asOf": null,
   "programmes": [
     { "id": "education", "labelKey": "programme.education" },
     { "id": "shelter", "labelKey": "programme.shelter" },
     { "id": "psychosocial", "labelKey": "programme.psychosocial" },
     { "id": "nutrition", "labelKey": "programme.nutrition" }
   ],
-  "years": [
-    { "year": 2023, "values": { "education": 780, "shelter": 340, "psychosocial": 410, "nutrition": 1120 } },
-    { "year": 2024, "values": { "education": 2140, "shelter": 960, "psychosocial": 1330, "nutrition": 3260 } },
-    { "year": 2025, "values": { "education": 3860, "shelter": 1740, "psychosocial": 2510, "nutrition": 5980 } },
-    { "year": 2026, "values": { "education": 4590, "shelter": 2210, "psychosocial": 3040, "nutrition": 7150 } }
-  ]
+  "years": []
 }

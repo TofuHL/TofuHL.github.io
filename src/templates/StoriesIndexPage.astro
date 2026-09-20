@@ -78,7 +78,7 @@ const dateFormat = new Intl.DateTimeFormat(locale === 'uk' ? 'uk-UA' : locale ==
           );
         })}
       </div>
-      <p class="text-secondary stories__empty" data-stories-empty hidden>{p.noResults}</p>
+      <p class="text-secondary stories__empty" data-stories-empty hidden={allStories.length > 0}>{p.noResults}</p>
     </div>
   </section>
 </BaseLayout>
@@ -132,4 +132,5 @@ const dateFormat = new Intl.DateTimeFormat(locale === 'uk' ? 'uk-UA' : locale ==
 
   programmeFilter?.addEventListener('change', applyFilters);
   locationFilter?.addEventListener('change', applyFilters);
+  applyFilters();
 </script>

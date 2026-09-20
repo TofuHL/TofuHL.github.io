@@ -1,55 +1,68 @@
 ---
 import { getDict, pick, type Locale } from '../../i18n/ui';
-import data from '../../data/chart-children-reached.json';
+import rawData from '../../data/chart-children-reached.json';
+import type { ChildrenReachedYear } from '../../data/types';
 
 export interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
 const dict = getDict(locale);
+const data = { ...rawData, years: rawData.years as ChildrenReachedYear[] };
 const numberFormat = new Intl.NumberFormat(locale === 'uk' ? 'uk-UA' : locale === 'sv' ? 'sv-SE' : 'en-GB');
 
 const programmes = data.programmes.map((p) => ({ ...p, label: String(pick(dict, p.labelKey)) }));
 const years = data.years.map((y) => String(y.year));
-const ariaLabel = `${dict.pages.impact.childrenReachedTitle}. ${programmes.map((p) => p.label).join(', ')}, ${years[0]}–${years[years.length - 1]}.`;
+const hasData = years.length > 0;
+const ariaLabel = hasData
+  ? `${dict.pages.impact.childrenReachedTitle}. ${programmes.map((p) => p.label).join(', ')}, ${years[0]}–${years[years.length - 1]}.`
+  : dict.pages.impact.noDataYet;
 ---
 
 <div class="chart-block">
   <h3>{dict.pages.impact.childrenReachedTitle}</h3>
-  <div class="chart-block__canvas-wrap chart-block__canvas-wrap--tall">
-    <canvas
-      id="chart-children-reached"
-      tabindex="0"
-      role="img"
-      aria-label={ariaLabel}
-      data-years={JSON.stringify(years)}
-      data-programmes={JSON.stringify(programmes.map((p) => ({ id: p.id, label: p.label })))}
-      data-series={JSON.stringify(data.years.map((y) => programmes.map((p) => y.values[p.id as keyof typeof y.values])))}
-    ></canvas>
-  </div>
-  <p class="chart-block__meta text-secondary">{dict.common.source}: {data.source} · {dict.common.updated} {data.asOf}</p>
+  {hasData ? (
+    <>
+      <div class="chart-block__canvas-wrap chart-block__canvas-wrap--tall">
+        <canvas
+          id="chart-children-reached"
+          tabindex="0"
+          role="img"
+          aria-label={ariaLabel}
+          data-years={JSON.stringify(years)}
+          data-programmes={JSON.stringify(programmes.map((p) => ({ id: p.id, label: p.label })))}
+          data-series={JSON.stringify(data.years.map((y) => programmes.map((p) => y.values[p.id as keyof typeof y.values])))}
+        ></canvas>
+      </div>
+      {data.source && (
+        <p class="chart-block__meta text-secondary">{dict.common.source}: {data.source} · {dict.common.updated} {data.asOf}</p>
+      )}
 
-  <details class="chart-table">
-    <summary>{dict.common.viewDataTable}</summary>
-    <table class="data-table">
-      <caption class="visually-hidden">{dict.pages.impact.childrenReachedTitle}</caption>
-      <thead>
-        <tr>
-          <th scope="col">{dict.common.year}</th>
-          {programmes.map((p) => <th scope="col">{p.label}</th>)}
-        </tr>
-      </thead>
-      <tbody>
-        {data.years.map((y) => (
-          <tr>
-            <th scope="row">{y.year}</th>
-            {programmes.map((p) => <td>{numberFormat.format(y.values[p.id as keyof typeof y.values])}</td>)}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </details>
-  <a class="csv-link" href="/data/children-reached.csv" download>{dict.common.downloadCsv}</a>
+      <details class="chart-table">
+        <summary>{dict.common.viewDataTable}</summary>
+        <table class="data-table">
+          <caption class="visually-hidden">{dict.pages.impact.childrenReachedTitle}</caption>
+          <thead>
+            <tr>
+              <th scope="col">{dict.common.year}</th>
+              {programmes.map((p) => <th scope="col">{p.label}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {data.years.map((y) => (
+              <tr>
+                <th scope="row">{y.year}</th>
+                {programmes.map((p) => <td>{numberFormat.format(y.values[p.id as keyof typeof y.values])}</td>)}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </details>
+      <a class="csv-link" href="/data/children-reached.csv" download>{dict.common.downloadCsv}</a>
+    </>
+  ) : (
+    <p class="text-secondary chart-block__empty">{dict.pages.impact.noDataYet}</p>
+  )}
 </div>
 
 <script>
@@ -102,3 +115,7 @@ const ariaLabel = `${dict.pages.impact.childrenReachedTitle}. ${programmes.map((
     });
   }
 </script>
+
+<style>
+  .chart-block__empty { margin: 20px 0 0; padding: 32px; text-align: center; background: var(--color-bg-warm); border: 1px dashed var(--color-border); border-radius: var(--radius-md); }
+</style>

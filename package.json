@@ -4,10 +4,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "predev": "node scripts/generate-csv.mjs && node scripts/generate-placeholder-pdfs.mjs",
+    "predev": "node scripts/generate-csv.mjs",
     "dev": "astro dev",
     "start": "astro dev",
-    "prebuild": "node scripts/generate-csv.mjs && node scripts/generate-placeholder-pdfs.mjs",
+    "prebuild": "node scripts/generate-csv.mjs",
     "build": "astro check && astro build",
     "build:nocheck": "astro build",
     "preview": "astro preview",

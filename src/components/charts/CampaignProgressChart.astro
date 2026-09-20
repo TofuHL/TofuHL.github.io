@@ -1,60 +1,71 @@
 ---
 import { getDict, pick, type Locale } from '../../i18n/ui';
-import data from '../../data/chart-campaign-progress.json';
+import rawData from '../../data/chart-campaign-progress.json';
+import type { CampaignEntry } from '../../data/types';
 
 export interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
 const dict = getDict(locale);
+const data = { ...rawData, campaigns: rawData.campaigns as CampaignEntry[] };
 const numberFormat = new Intl.NumberFormat(locale === 'uk' ? 'uk-UA' : locale === 'sv' ? 'sv-SE' : 'en-GB');
 
 const campaigns = data.campaigns.map((c) => ({ ...c, name: String(pick(dict, c.nameKey)) }));
+const hasData = campaigns.length > 0;
 const campaignSummaries = campaigns.map((c) => c.name + ' ' + Math.round((c.raised / c.goal) * 100) + '%');
-const ariaLabel = dict.pages.impact.campaignProgressTitle + ': ' + campaignSummaries.join(', ') + '.';
+const ariaLabel = hasData
+  ? dict.pages.impact.campaignProgressTitle + ': ' + campaignSummaries.join(', ') + '.'
+  : dict.pages.impact.noDataYet;
 ---
 
 <div class="chart-block">
   <h3>{dict.pages.impact.campaignProgressTitle}</h3>
-  <div class="chart-block__canvas-wrap chart-block__canvas-wrap--tall">
-    <canvas
-      id="chart-campaign-progress"
-      tabindex="0"
-      role="img"
-      aria-label={ariaLabel}
-      data-labels={JSON.stringify(campaigns.map((c) => c.name))}
-      data-raised={JSON.stringify(campaigns.map((c) => c.raised))}
-      data-goal={JSON.stringify(campaigns.map((c) => c.goal))}
-      data-currency={data.currency}
-    ></canvas>
-  </div>
-  <p class="chart-block__meta text-secondary">{dict.common.updated} {data.asOf}</p>
+  {hasData ? (
+    <>
+      <div class="chart-block__canvas-wrap chart-block__canvas-wrap--tall">
+        <canvas
+          id="chart-campaign-progress"
+          tabindex="0"
+          role="img"
+          aria-label={ariaLabel}
+          data-labels={JSON.stringify(campaigns.map((c) => c.name))}
+          data-raised={JSON.stringify(campaigns.map((c) => c.raised))}
+          data-goal={JSON.stringify(campaigns.map((c) => c.goal))}
+          data-currency={data.currency}
+        ></canvas>
+      </div>
+      <p class="chart-block__meta text-secondary">{dict.common.updated} {data.asOf}</p>
 
-  <details class="chart-table">
-    <summary>{dict.common.viewDataTable}</summary>
-    <table class="data-table">
-      <caption class="visually-hidden">{dict.pages.impact.campaignProgressTitle}</caption>
-      <thead>
-        <tr>
-          <th scope="col">{dict.common.campaign}</th>
-          <th scope="col">{dict.common.raised} ({data.currency})</th>
-          <th scope="col">{dict.common.goal} ({data.currency})</th>
-          <th scope="col">%</th>
-        </tr>
-      </thead>
-      <tbody>
-        {campaigns.map((c) => (
-          <tr>
-            <th scope="row">{c.name}</th>
-            <td>{numberFormat.format(c.raised)}</td>
-            <td>{numberFormat.format(c.goal)}</td>
-            <td>{Math.round((c.raised / c.goal) * 100)}%</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </details>
-  <a class="csv-link" href="/data/campaign-progress.csv" download>{dict.common.downloadCsv}</a>
+      <details class="chart-table">
+        <summary>{dict.common.viewDataTable}</summary>
+        <table class="data-table">
+          <caption class="visually-hidden">{dict.pages.impact.campaignProgressTitle}</caption>
+          <thead>
+            <tr>
+              <th scope="col">{dict.common.campaign}</th>
+              <th scope="col">{dict.common.raised} ({data.currency})</th>
+              <th scope="col">{dict.common.goal} ({data.currency})</th>
+              <th scope="col">%</th>
+            </tr>
+          </thead>
+          <tbody>
+            {campaigns.map((c) => (
+              <tr>
+                <th scope="row">{c.name}</th>
+                <td>{numberFormat.format(c.raised)}</td>
+                <td>{numberFormat.format(c.goal)}</td>
+                <td>{Math.round((c.raised / c.goal) * 100)}%</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </details>
+      <a class="csv-link" href="/data/campaign-progress.csv" download>{dict.common.downloadCsv}</a>
+    </>
+  ) : (
+    <p class="text-secondary chart-block__empty">{dict.pages.impact.noDataYet}</p>
+  )}
 </div>
 
 <script>
@@ -129,4 +140,5 @@ const ariaLabel = dict.pages.impact.campaignProgressTitle + ': ' + campaignSumma
 
 <style>
   .chart-block__canvas-wrap--tall { height: 260px; }
+  .chart-block__empty { margin: 20px 0 0; padding: 32px; text-align: center; background: var(--color-bg-warm); border: 1px dashed var(--color-border); border-radius: var(--radius-md); }
 </style>

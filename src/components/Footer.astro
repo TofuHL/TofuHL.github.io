@@ -17,6 +17,11 @@ const sectionLinks: { key: keyof typeof dict.nav; path: string }[] = [
   { key: 'getInvolved', path: 'get-involved' },
   { key: 'stories', path: 'stories' },
 ];
+
+const country = legal.registrationCountry[locale] ?? legal.registrationCountry.en;
+const orgLineParts = [legal.registeredName, legal.orgNumber ? `Org.nr ${legal.orgNumber}` : null, country].filter(
+  Boolean,
+);
 ---
 
 <footer class="site-footer">
@@ -27,7 +32,9 @@ const sectionLinks: { key: keyof typeof dict.nav; path: string }[] = [
         {dict.meta.siteName}
       </a>
       <p class="text-secondary">{dict.footer.about}</p>
-      <p class="site-footer__orgline text-secondary">{dict.footer.orgLine}</p>
+      {orgLineParts.length > 0 && (
+        <p class="site-footer__orgline text-secondary">{orgLineParts.join(' · ')}</p>
+      )}
     </div>
 
     <div>
@@ -61,7 +68,7 @@ const sectionLinks: { key: keyof typeof dict.nav; path: string }[] = [
   </div>
 
   <div class="container site-footer__bottom">
-    <p class="text-secondary">© {new Date().getFullYear()} {legal.registeredName}. {dict.footer.rights}</p>
+    <p class="text-secondary">© {new Date().getFullYear()} {dict.meta.siteName}. {dict.footer.rights}</p>
   </div>
 </footer>
 

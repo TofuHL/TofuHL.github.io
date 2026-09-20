@@ -4,8 +4,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PhotoPlaceholder from '../components/PhotoPlaceholder.astro';
 import ClosingCta from '../components/ClosingCta.astro';
 import { getDict, pick, type Locale } from '../i18n/ui';
-import legal from '../data/legal.json';
-import timeline from '../data/timeline.json';
+import legalData from '../data/legal.json';
+import timelineData from '../data/timeline.json';
+import type { BoardMember, TimelineItem } from '../data/types';
 
 export interface Props {
   locale: Locale;
@@ -15,6 +16,11 @@ const dict = getDict(locale);
 const p = dict.pages.whoWeAre;
 
 const team = (await getCollection('team')).sort((a, b) => a.data.order - b.data.order);
+
+const legal = { ...legalData, board: legalData.board as BoardMember[] };
+const timeline = timelineData as TimelineItem[];
+
+const hasLegalInfo = Boolean(legal.registeredName || legal.orgNumber || legal.governanceModel[locale] || legal.governanceModel.en);
 ---
 
 <BaseLayout locale={locale} path="who-we-are" title={p.title} description={p.metaDescription}>
@@ -27,10 +33,14 @@ const team = (await getCollection('team')).sort((a, b) => a.data.order - b.data.
 
   <section class="section who-we-are__story">
     <div class="container who-we-are__story-grid">
-      <PhotoPlaceholder caption="Photo placeholder: Elin and Marcus in the Malmö office, consented image pending." ratio="4 / 3" />
+      <PhotoPlaceholder caption="Photo placeholder: a real, consented photo of the founder(s) or team." ratio="4 / 3" />
       <div>
         <p class="eyebrow">{p.storyIntro}</p>
-        {p.storyParagraphs.map((para: string) => <p class="who-we-are__story-para">{para}</p>)}
+        {p.storyParagraphs.length > 0 ? (
+          p.storyParagraphs.map((para: string) => <p class="who-we-are__story-para">{para}</p>)
+        ) : (
+          <p class="who-we-are__story-para text-secondary">{p.storyPlaceholder}</p>
+        )}
       </div>
     </div>
   </section>
@@ -39,58 +49,82 @@ const team = (await getCollection('team')).sort((a, b) => a.data.order - b.data.
     <div class="container">
       <h2 id="team-title">{p.teamTitle}</h2>
       <p class="text-secondary who-we-are__team-intro">{p.teamIntro}</p>
-      <div class="who-we-are__team-grid">
-        {team.map((member) => (
-          <div class="card who-we-are__member fade-in-up">
-            <PhotoPlaceholder caption={member.data.photoAlt[locale] ?? member.data.photoAlt.en} ratio="1 / 1" />
-            <h3>{member.data.name}</h3>
-            <p class="who-we-are__member-role">{member.data.role[locale] ?? member.data.role.en}</p>
-            <p class="text-secondary who-we-are__member-loc">{member.data.location}</p>
-            <p class="who-we-are__member-bio">{member.data.bio[locale] ?? member.data.bio.en}</p>
-          </div>
-        ))}
-      </div>
+      {team.length > 0 ? (
+        <div class="who-we-are__team-grid">
+          {team.map((member) => (
+            <div class="card who-we-are__member fade-in-up">
+              <PhotoPlaceholder caption={member.data.photoAlt[locale] ?? member.data.photoAlt.en} ratio="1 / 1" />
+              <h3>{member.data.name}</h3>
+              <p class="who-we-are__member-role">{member.data.role[locale] ?? member.data.role.en}</p>
+              <p class="text-secondary who-we-are__member-loc">{member.data.location}</p>
+              <p class="who-we-are__member-bio">{member.data.bio[locale] ?? member.data.bio.en}</p>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p class="text-secondary who-we-are__empty">{p.teamEmpty}</p>
+      )}
     </div>
   </section>
 
   <section class="section who-we-are__legal" aria-labelledby="legal-title">
     <div class="container">
       <h2 id="legal-title">{p.legalTitle}</h2>
-      <div class="who-we-are__legal-grid">
-        <dl class="who-we-are__legal-facts">
-          <div><dt>{p.legalLabels.registeredName}</dt><dd>{legal.registeredName}</dd></div>
-          <div><dt>{p.legalLabels.orgNumber}</dt><dd>{legal.orgNumber}</dd></div>
-          <div><dt>{p.legalLabels.country}</dt><dd>{legal.registrationCountry[locale] ?? legal.registrationCountry.en}</dd></div>
-          <div><dt>{p.legalLabels.authority}</dt><dd>{legal.registrationAuthority[locale] ?? legal.registrationAuthority.en}</dd></div>
-          <div><dt>{p.legalLabels.license}</dt><dd>{legal.fundraisingLicense[locale] ?? legal.fundraisingLicense.en}</dd></div>
-        </dl>
-        <div>
-          <p class="who-we-are__governance">{legal.governanceModel[locale] ?? legal.governanceModel.en}</p>
-          <h3>{p.boardTitle}</h3>
-          <ul class="who-we-are__board-list">
-            {legal.board.map((member) => (
-              <li><strong>{member.name}</strong> — {String(pick(dict, member.roleKey))}</li>
-            ))}
-          </ul>
+      {hasLegalInfo ? (
+        <div class="who-we-are__legal-grid">
+          <dl class="who-we-are__legal-facts">
+            {legal.registeredName && <div><dt>{p.legalLabels.registeredName}</dt><dd>{legal.registeredName}</dd></div>}
+            {legal.orgNumber && <div><dt>{p.legalLabels.orgNumber}</dt><dd>{legal.orgNumber}</dd></div>}
+            {(legal.registrationCountry[locale] ?? legal.registrationCountry.en) && (
+              <div><dt>{p.legalLabels.country}</dt><dd>{legal.registrationCountry[locale] ?? legal.registrationCountry.en}</dd></div>
+            )}
+            {(legal.registrationAuthority[locale] ?? legal.registrationAuthority.en) && (
+              <div><dt>{p.legalLabels.authority}</dt><dd>{legal.registrationAuthority[locale] ?? legal.registrationAuthority.en}</dd></div>
+            )}
+            {(legal.fundraisingLicense[locale] ?? legal.fundraisingLicense.en) && (
+              <div><dt>{p.legalLabels.license}</dt><dd>{legal.fundraisingLicense[locale] ?? legal.fundraisingLicense.en}</dd></div>
+            )}
+          </dl>
+          <div>
+            {(legal.governanceModel[locale] ?? legal.governanceModel.en) && (
+              <p class="who-we-are__governance">{legal.governanceModel[locale] ?? legal.governanceModel.en}</p>
+            )}
+            <h3>{p.boardTitle}</h3>
+            {legal.board.length > 0 ? (
+              <ul class="who-we-are__board-list">
+                {legal.board.map((member) => (
+                  <li><strong>{member.name}</strong> — {String(pick(dict, member.roleKey))}</li>
+                ))}
+              </ul>
+            ) : (
+              <p class="text-secondary">{p.boardEmpty}</p>
+            )}
+          </div>
         </div>
-      </div>
+      ) : (
+        <p class="text-secondary who-we-are__empty">{p.legalEmpty}</p>
+      )}
     </div>
   </section>
 
   <section class="section who-we-are__timeline" aria-labelledby="timeline-title">
     <div class="container">
       <h2 id="timeline-title">{p.timelineTitle}</h2>
-      <ol class="timeline">
-        {timeline.map((item) => (
-          <li class="timeline__item fade-in-up">
-            <span class="timeline__year">{item.year}</span>
-            <div>
-              <h3 class="timeline__title">{String(pick(dict, item.titleKey))}</h3>
-              <p class="text-secondary">{String(pick(dict, item.descKey))}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
+      {timeline.length > 0 ? (
+        <ol class="timeline">
+          {timeline.map((item) => (
+            <li class="timeline__item fade-in-up">
+              <span class="timeline__year">{item.year}</span>
+              <div>
+                <h3 class="timeline__title">{String(pick(dict, item.titleKey))}</h3>
+                <p class="text-secondary">{String(pick(dict, item.descKey))}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <p class="text-secondary who-we-are__empty">{p.timelineEmpty}</p>
+      )}
     </div>
   </section>
 

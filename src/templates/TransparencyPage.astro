@@ -3,8 +3,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import AllocationChart from '../components/charts/AllocationChart.astro';
 import ClosingCta from '../components/ClosingCta.astro';
 import { getDict, type Locale } from '../i18n/ui';
-import reports from '../data/reports.json';
+import reportsData from '../data/reports.json';
 import legal from '../data/legal.json';
+import type { Report } from '../data/types';
 
 export interface Props {
   locale: Locale;
@@ -12,6 +13,7 @@ export interface Props {
 const { locale } = Astro.props;
 const dict = getDict(locale);
 const p = dict.pages.transparency;
+const reports = reportsData as Report[];
 
 const dateFormat = new Intl.DateTimeFormat(locale === 'uk' ? 'uk-UA' : locale === 'sv' ? 'sv-SE' : 'en-GB', {
   year: 'numeric',
@@ -79,7 +81,9 @@ const dateFormat = new Intl.DateTimeFormat(locale === 'uk' ? 'uk-UA' : locale ==
           </li>
         ))}
       </ul>
-      <p class="transparency__registry text-secondary">{legal.fundraisingLicense[locale] ?? legal.fundraisingLicense.en}</p>
+      {(legal.fundraisingLicense[locale] ?? legal.fundraisingLicense.en) && (
+        <p class="transparency__registry text-secondary">{legal.fundraisingLicense[locale] ?? legal.fundraisingLicense.en}</p>
+      )}
     </div>
   </section>
 

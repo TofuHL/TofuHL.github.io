@@ -25,9 +25,17 @@ npm run preview  # serve the production build locally
 ```
 
 `npm run dev` and `npm run build` both run a `pre*` script
-(`scripts/generate-csv.mjs` and `scripts/generate-placeholder-pdfs.mjs`)
-that regenerates the downloadable CSV/PDF files from the JSON data below, so
-they never go stale.
+(`scripts/generate-csv.mjs`) that regenerates the downloadable CSV files
+from the JSON data below, so they never go stale.
+
+**This repo ships with no invented content.** Every number is `0`/`null`,
+every list of team members, partners, press coverage, testimonials, stories
+and reports is empty, and every page shows an honest "not yet available"
+message in that case instead of a broken layout — see *Updating campaign and
+financial figures* and *Content collections* below for where to add the real
+thing. Do not fill these back in with placeholder/example data that looks
+real; leave them empty until the organisation has real figures, real people
+and real partners to publish.
 
 ---
 
@@ -48,8 +56,8 @@ src/
   layouts/            BaseLayout.astro (head, schema.org, header/footer, cookie banner)
   templates/          One Astro component per page (e.g. HomePage.astro)
   pages/{en,sv,uk}/   Thin per-locale route files that render the templates above
-scripts/              Build-time generators (CSV exports, placeholder PDFs)
-public/               Static assets, favicon, robots.txt, generated /data and /reports
+scripts/              Build-time generator (CSV exports)
+public/               Static assets, favicon, robots.txt, generated /data; put real reports in public/reports/
 ```
 
 **Why templates + thin page routes?** Astro's built-in i18n routing (with
@@ -63,27 +71,30 @@ prop.
 
 ## Updating campaign and financial figures
 
-**Nothing about money is hardcoded in a component.** Every number renders
-from a JSON file in `src/data/`. Edit the file, commit, and the next deploy
-picks it up automatically.
+**Nothing about money is hardcoded in a component, and nothing is invented.**
+Every number renders from a JSON file in `src/data/`, and every one of those
+files currently ships as `0`, `null`, or `[]` with a `_comment` saying so.
+Replace a placeholder only when the real figure exists — never with a
+plausible-looking example number, since these render directly on a live
+donation page.
 
-| What | File |
-|---|---|
-| Live fundraising bar (total raised, goal, donor count, campaign dates) | `src/data/fundraising.json` |
-| Homepage impact counters (children supported, meals, kits, shelters) | `src/data/impact-stats.json` |
-| "How your donation helps" amount tiers | `src/data/how-it-helps.json` |
-| Cumulative funds raised chart | `src/data/chart-funds-over-time.json` |
-| Allocation of funds (donut chart) | `src/data/chart-allocation.json` — **must sum to 100** |
-| Campaign progress bars | `src/data/chart-campaign-progress.json` |
-| Children reached by programme/year | `src/data/chart-children-reached.json` |
-| Org timeline | `src/data/timeline.json` |
-| Legal identity, board, governance | `src/data/legal.json` |
-| Cited statistics on the Mission page | `src/data/stats-sources.json` |
-| "Where we work" map markers | `src/data/oblasts.json` |
-| Downloadable annual reports/audits | `src/data/reports.json` + files in `public/reports/` |
+| What | File | Ships as |
+|---|---|---|
+| Live fundraising bar (total raised, goal, donor count, campaign dates) | `src/data/fundraising.json` | zero/null — shows "hasn't launched yet" |
+| Homepage impact counters (children supported, meals, kits, shelters) | `src/data/impact-stats.json` | zero, no source |
+| "How your donation helps" amount tiers | `src/data/how-it-helps.json` | example amounts (forward-looking, not a claim of past spend) |
+| Cumulative funds raised chart | `src/data/chart-funds-over-time.json` | empty — chart shows "no data yet" |
+| Allocation of funds (donut chart) | `src/data/chart-allocation.json` | zero percentages — **must sum to 100 once real** |
+| Campaign progress bars | `src/data/chart-campaign-progress.json` | empty |
+| Children reached by programme/year | `src/data/chart-children-reached.json` | empty |
+| Org timeline | `src/data/timeline.json` | empty array |
+| Legal identity, board, governance | `src/data/legal.json` | all fields `null` / empty |
+| Cited statistics on the Mission page | `src/data/stats-sources.json` | empty — section hides itself until filled |
+| "Where we work" map markers | `src/data/oblasts.json` | empty — do not add a location until a programme is actually running there |
+| Downloadable annual reports/audits | `src/data/reports.json` + files in `public/reports/` | empty |
 
-Every figure that has a `date`/`asOf`/`source` field is shown on the page
-with that citation — keep them current when you update a number.
+Every figure that has a `date`/`asOf`/`source` field must be shown on the
+page with that citation once populated — don't add a number without one.
 
 **In production, replace the manual-edit workflow above with a scheduled
 job** (e.g. a GitHub Action on a cron trigger, or a webhook from your
@@ -105,7 +116,14 @@ source of numbers, translated consistently across all three languages.
 ## Content collections (team, partners, press, testimonials, stories)
 
 These live under `src/content/` and are validated by the schema in
-`src/content/config.ts`.
+`src/content/config.ts`. **All five collections ship empty** — no seed/demo
+entries — and every page that lists them (Who We Are's team grid, the
+homepage's featured story and partner row, Evidence of Support's partners/
+testimonials/press) shows a real "not yet added" message instead of fake
+examples, or simply hides that section. Do not add placeholder entries with
+invented names to "make the page look fuller" — add a real team member, a
+real signed partnership, a real published article, a real consenting
+testimonial, or don't add one yet.
 
 - **team / partners / press / testimonials**: one JSON file per entry.
   Most text fields are `{ en, sv, uk }` objects — fill in all three, or at
@@ -116,10 +134,12 @@ These live under `src/content/` and are validated by the schema in
   (`education|shelter|psychosocial|nutrition`), `photoAlt`, `featured`.
   The **file name** (slug) must match across locales if you want the
   language switcher to land on the translated version of the same story
-  (not currently auto-linked — see Known limitations).
+  (not currently auto-linked — see Known limitations). Only publish a story
+  about a delivery that actually happened.
 
-To add a new story, copy an existing `.md` file, change the frontmatter,
-and write the body in Markdown.
+To add a new story, copy the schema in `src/content/config.ts`'s `stories`
+definition into a new `.md` file with real frontmatter, and write the body
+in Markdown.
 
 ---
 
@@ -135,13 +155,11 @@ and write the body in Markdown.
 - Long-form page prose (mission pillars, principles, policy text, timeline,
   get-involved options, etc.) also lives in those same locale files and is
   fully translated for all three languages.
-- **Content collections are partially localised as shipped**: all UI
-  and page copy is translated, but only one seed story
-  (`school-kits-kharkiv`) has Swedish and Ukrainian translations — the
-  other two seed stories exist in English only. Team bios, partner
-  descriptions, press headlines and testimonials are translated. Add
-  `sv`/`uk` fields (or story files) following the existing pattern as real
-  content comes in.
+- **Content collections ship empty in every locale** (see above) — there's
+  nothing to translate yet. The `{ en, sv, uk }` shape on every content
+  schema field is there so that when you add a real team member, partner,
+  press item, testimonial or story, you fill in all three languages (or at
+  least `en`) at that point.
 - To add a fourth language: add its code to `locales` in `astro.config.mjs`,
   add `src/i18n/locales/<code>.json` with the same keys as `en.json`, add
   `src/pages/<code>/**` route files (copy an existing locale's routes),
@@ -174,9 +192,9 @@ canvas is never the only way to get the data**:
 
 ## What's stubbed and needs wiring before a real launch
 
-This is a complete front end with realistic seeded data, but a few things
-are deliberately **front-end placeholders** — there is no backend in this
-repo, by design (it's a static site):
+This is a complete, working front end with **no invented content** — see
+above. A few things are also deliberately **front-end placeholders**, since
+there is no backend in this repo by design (it's a static site):
 
 1. **Payments.** The donation panel (`src/components/DonationPanel.astro`)
    collects amount/frequency/payment-method choices and submits a `GET` to
@@ -199,18 +217,28 @@ repo, by design (it's a static site):
    caption describes the real, consented photo it should be replaced with.
    Swap `PhotoPlaceholder` usages for real `<img>` (WebP/AVIF, explicit
    width/height, real alt text) as photography is cleared.
-6. **Reports.** `public/reports/*.pdf` are minimal generated placeholder
-   PDFs (see `scripts/generate-placeholder-pdfs.mjs`), not real audited
-   documents. Replace them and update `src/data/reports.json`.
-7. **Social share image.** `public/og-default.svg` is an SVG Open Graph
-   image; several platforms (notably Facebook/X) render OG images more
-   reliably as PNG/JPG. Export a PNG version before launch.
-8. **Registration numbers.** `src/data/legal.json` has placeholder
-   organisation/license numbers (`802XXX-XXXX`, `90XX-XXXX`) — replace with
-   the real registry entries.
-9. **Legal pages.** Draft privacy policy / safeguarding policy copy lives
-   on the Transparency page (`#privacy`, `#safeguarding`); have counsel
-   review before launch.
+6. **Reports.** `src/data/reports.json` is empty and `public/reports/` has
+   no files. Add the real audited PDFs to `public/reports/` and an entry
+   per file to `reports.json` once they exist — don't add placeholder PDFs.
+7. **Social share image.** `public/og-default.svg` is a generic branded SVG
+   Open Graph image (logo mark + org name only, no invented tagline claims);
+   several platforms (notably Facebook/X) render OG images more reliably as
+   PNG/JPG. Export a PNG version before launch.
+8. **Registration numbers.** `src/data/legal.json` has every field set to
+   `null`. Fill in the real registered name, organisation number,
+   registration country/authority, fundraising license, governance
+   description and board once the organisation is actually registered —
+   the Who We Are and Transparency pages hide these sections until then.
+9. **Legal pages.** Privacy policy / safeguarding policy copy on the
+   Transparency page (`#privacy`, `#safeguarding`) states the *policy* the
+   org is committing to follow; have counsel review before launch, and keep
+   the procurement/safeguarding/complaints text honest as the org's actual
+   process, not aspirational copy.
+10. **Mission page "who delivers it."** Each programme pillar's "who"
+    field is a bracketed placeholder (`[Add the local partner
+    organisation(s) …]`) in all three languages. Fill it in only once a
+    partnership is actually confirmed — do not name a partner
+    organisation, however plausible, before that's true.
 
 ---
 

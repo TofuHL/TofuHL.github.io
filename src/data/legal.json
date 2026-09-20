@@ -1,28 +1,10 @@
 {
-  "_comment": "Legal identity block for Who We Are. Replace placeholder registration numbers with the real registry entries before launch.",
-  "registeredName": "Samma färger (Insamlingsstiftelsen Samma färger)",
-  "orgNumber": "802XXX-XXXX",
-  "registrationCountry": { "en": "Sweden", "sv": "Sverige", "uk": "Швеція" },
-  "registrationAuthority": {
-    "en": "Bolagsverket / Länsstyrelsen (foundation register)",
-    "sv": "Bolagsverket / Länsstyrelsen (stiftelseregistret)",
-    "uk": "Bolagsverket / Länsstyrelsen (реєстр фондів)"
-  },
-  "fundraisingLicense": {
-    "en": "Registered with Svensk Insamlingskontroll — 90-account: 90XX-XXXX",
-    "sv": "Registrerad hos Svensk Insamlingskontroll — 90-konto: 90XX-XXXX",
-    "uk": "Зареєстровано в Svensk Insamlingskontroll — 90-рахунок: 90XX-XXXX"
-  },
-  "governanceModel": {
-    "en": "Independent foundation (stiftelse) governed by a volunteer board of five, meeting quarterly. An external auditor reviews annual accounts. Programme decisions in Ukraine are made jointly with locally registered partner organisations.",
-    "sv": "Oberoende stiftelse som styrs av en volontärstyrelse på fem personer, som sammanträder kvartalsvis. En extern revisor granskar årsredovisningen. Programbeslut i Ukraina fattas gemensamt med lokalt registrerade partnerorganisationer.",
-    "uk": "Незалежний фонд (stiftelse), яким керує волонтерське правління з п'яти осіб, що збирається щоквартально. Зовнішній аудитор перевіряє річну звітність. Рішення щодо програм в Україні ухвалюються спільно з місцево зареєстрованими партнерськими організаціями."
-  },
-  "board": [
-    { "name": "Elin Håkansson", "roleKey": "board.chair" },
-    { "name": "Marcus Lindqvist", "roleKey": "board.treasurer" },
-    { "name": "Olena Sydorenko", "roleKey": "board.programme" },
-    { "name": "Rasmus Ek", "roleKey": "board.member" },
-    { "name": "Yuliia Bondar", "roleKey": "board.member" }
-  ]
+  "_comment": "PLACEHOLDER — every field below needs to be filled in with real registration details and real board members before this page is published. Nothing here should be presented as fact until confirmed.",
+  "registeredName": null,
+  "orgNumber": null,
+  "registrationCountry": { "en": null, "sv": null, "uk": null },
+  "registrationAuthority": { "en": null, "sv": null, "uk": null },
+  "fundraisingLicense": { "en": null, "sv": null, "uk": null },
+  "governanceModel": { "en": null, "sv": null, "uk": null },
+  "board": []
 }

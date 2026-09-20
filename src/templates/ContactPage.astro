@@ -56,9 +56,11 @@ const p = dict.pages.contact;
         <div>
           <h2>{p.orgDetailsTitle}</h2>
           <p>
-            {legal.registeredName}<br />
-            Org.nr {legal.orgNumber}<br />
-            Malmö, {legal.registrationCountry[locale] ?? legal.registrationCountry.en}
+            {legal.registeredName ?? dict.meta.siteName}
+            {legal.orgNumber && <><br />Org.nr {legal.orgNumber}</>}
+            {(legal.registrationCountry[locale] ?? legal.registrationCountry.en) && (
+              <><br />{legal.registrationCountry[locale] ?? legal.registrationCountry.en}</>
+            )}
           </p>
           <p class="text-secondary">general@sammafarger.example</p>
         </div>

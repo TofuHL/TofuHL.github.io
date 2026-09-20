@@ -30,10 +30,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Generate CSV and report placeholders
-        run: |
-          node scripts/generate-csv.mjs
-          node scripts/generate-placeholder-pdfs.mjs
+      - name: Generate CSV exports
+        run: node scripts/generate-csv.mjs
 
       - name: Type-check
         run: npx astro check

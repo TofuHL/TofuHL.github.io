@@ -1,11 +1,6 @@
 {
-  "_comment": "Horizontal bar chart: active campaigns, raised vs goal. Currency SEK.",
-  "asOf": "2026-09-18",
+  "_comment": "PLACEHOLDER — no campaigns have launched yet. Replace `campaigns` with real active campaigns once they exist.",
+  "asOf": null,
   "currency": "SEK",
-  "campaigns": [
-    { "id": "winter-shelter", "nameKey": "campaign.winterShelter", "raised": 1860000, "goal": 2200000 },
-    { "id": "school-kits", "nameKey": "campaign.schoolKits", "raised": 940000, "goal": 1000000 },
-    { "id": "psychosocial", "nameKey": "campaign.psychosocial", "raised": 612000, "goal": 1200000 },
-    { "id": "nutrition", "nameKey": "campaign.nutrition", "raised": 775650, "goal": 1600000 }
-  ]
+  "campaigns": []
 }

@@ -18,7 +18,9 @@ const dict = getDict(locale);
         <div class="impact-stats__item fade-in-up">
           <span class="impact-stats__value" data-countup={stat.value}>0</span>
           <span class="impact-stats__label">{String(pick(dict, stat.labelKey))}</span>
-          <span class="impact-stats__source text-secondary">{dict.common.source}: {stat.source} ({stat.sourceDate})</span>
+          {stat.source && (
+            <span class="impact-stats__source text-secondary">{dict.common.source}: {stat.source} ({stat.sourceDate})</span>
+          )}
         </div>
       ))}
     </div>

@@ -1,12 +1,14 @@
 ---
 import { getDict, type Locale } from '../../i18n/ui';
-import data from '../../data/chart-funds-over-time.json';
+import rawData from '../../data/chart-funds-over-time.json';
+import type { FundsMonth } from '../../data/types';
 
 export interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
 const dict = getDict(locale);
+const data = { ...rawData, months: rawData.months as FundsMonth[] };
 
 const numberFormat = new Intl.NumberFormat(locale === 'uk' ? 'uk-UA' : locale === 'sv' ? 'sv-SE' : 'en-GB');
 const monthFormat = new Intl.DateTimeFormat(locale === 'uk' ? 'uk-UA' : locale === 'sv' ? 'sv-SE' : 'en-GB', {
@@ -14,44 +16,55 @@ const monthFormat = new Intl.DateTimeFormat(locale === 'uk' ? 'uk-UA' : locale =
   month: 'short',
 });
 
+const hasData = data.months.length > 0;
 const labels = data.months.map((m) => monthFormat.format(new Date(`${m.month}-01T00:00:00`)));
 const values = data.months.map((m) => m.cumulative);
 const first = data.months[0];
 const last = data.months[data.months.length - 1];
 
-const ariaLabel = `${dict.pages.impact.fundsOverTimeTitle}: ${dict.common.raised} ${numberFormat.format(first.cumulative)} ${data.currency} ${monthFormat.format(new Date(first.month + '-01'))} → ${numberFormat.format(last.cumulative)} ${data.currency} ${monthFormat.format(new Date(last.month + '-01'))}.`;
+const ariaLabel = hasData
+  ? `${dict.pages.impact.fundsOverTimeTitle}: ${dict.common.raised} ${numberFormat.format(first.cumulative)} ${data.currency} ${monthFormat.format(new Date(first.month + '-01'))} → ${numberFormat.format(last.cumulative)} ${data.currency} ${monthFormat.format(new Date(last.month + '-01'))}.`
+  : dict.pages.impact.noDataYet;
 ---
 
 <div class="chart-block">
   <h3>{dict.pages.impact.fundsOverTimeTitle}</h3>
-  <div class="chart-block__canvas-wrap">
-    <canvas
-      id="chart-funds-over-time"
-      tabindex="0"
-      role="img"
-      aria-label={ariaLabel}
-      data-labels={JSON.stringify(labels)}
-      data-values={JSON.stringify(values)}
-      data-currency={data.currency}
-    ></canvas>
-  </div>
-  <p class="chart-block__meta text-secondary">{dict.common.source}: {data.source} · {dict.common.updated} {data.asOf}</p>
+  {hasData ? (
+    <>
+      <div class="chart-block__canvas-wrap">
+        <canvas
+          id="chart-funds-over-time"
+          tabindex="0"
+          role="img"
+          aria-label={ariaLabel}
+          data-labels={JSON.stringify(labels)}
+          data-values={JSON.stringify(values)}
+          data-currency={data.currency}
+        ></canvas>
+      </div>
+      {data.source && (
+        <p class="chart-block__meta text-secondary">{dict.common.source}: {data.source} · {dict.common.updated} {data.asOf}</p>
+      )}
 
-  <details class="chart-table">
-    <summary>{dict.common.viewDataTable}</summary>
-    <table class="data-table">
-      <caption class="visually-hidden">{dict.pages.impact.fundsOverTimeTitle}</caption>
-      <thead>
-        <tr><th scope="col">{dict.common.month}</th><th scope="col">{dict.common.raised} ({data.currency})</th></tr>
-      </thead>
-      <tbody>
-        {data.months.map((m, i) => (
-          <tr><th scope="row">{labels[i]}</th><td>{numberFormat.format(m.cumulative)}</td></tr>
-        ))}
-      </tbody>
-    </table>
-  </details>
-  <a class="csv-link" href="/data/funds-over-time.csv" download>{dict.common.downloadCsv}</a>
+      <details class="chart-table">
+        <summary>{dict.common.viewDataTable}</summary>
+        <table class="data-table">
+          <caption class="visually-hidden">{dict.pages.impact.fundsOverTimeTitle}</caption>
+          <thead>
+            <tr><th scope="col">{dict.common.month}</th><th scope="col">{dict.common.raised} ({data.currency})</th></tr>
+          </thead>
+          <tbody>
+            {data.months.map((m, i) => (
+              <tr><th scope="row">{labels[i]}</th><td>{numberFormat.format(m.cumulative)}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </details>
+      <a class="csv-link" href="/data/funds-over-time.csv" download>{dict.common.downloadCsv}</a>
+    </>
+  ) : (
+    <p class="text-secondary chart-block__empty">{dict.pages.impact.noDataYet}</p>
+  )}
 </div>
 
 <script>
@@ -116,5 +129,6 @@ const ariaLabel = `${dict.pages.impact.fundsOverTimeTitle}: ${dict.common.raised
   .chart-block { margin-bottom: 56px; }
   .chart-block__canvas-wrap { height: 340px; margin: 20px 0 8px; }
   .chart-block__meta { font-size: 12.5px; margin: 0 0 4px; }
+  .chart-block__empty { margin: 20px 0 0; padding: 32px; text-align: center; background: var(--color-bg-warm); border: 1px dashed var(--color-border); border-radius: var(--radius-md); }
   canvas:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 4px; }
 </style>
