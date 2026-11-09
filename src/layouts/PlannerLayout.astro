@@ -20,7 +20,17 @@ const nav = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex, nofollow" />
     <title>{title} · My Planner</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%234f46e5'/><rect x='7' y='9' width='18' height='16' rx='3' fill='none' stroke='white' stroke-width='2.4'/><path d='M7 14h18M12 6v5M20 6v5' stroke='white' stroke-width='2.4' stroke-linecap='round'/></svg>" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/planner/icons/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/planner/icons/favicon-48.png" />
+    <!-- iPhone / iPad home screen -->
+    <link rel="apple-touch-icon" href="/planner/icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/planner/manifest.webmanifest" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Planner" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="theme-color" content="#f6f7fb" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e1118" media="(prefers-color-scheme: dark)" />
     <!-- Apply the saved theme before the page paints, so there is no flash. -->
     <script is:inline>
       (function () {
@@ -41,7 +51,7 @@ const nav = [
     <header class="topbar">
       <a class="brand" href="/planner/">
         <span class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="18" height="18"><rect x="3" y="5" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 2.5v4M16 2.5v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <img src="/planner/icons/logo-128.png" alt="" width="36" height="36" />
         </span>
         <span>My Planner</span>
       </a>
@@ -259,8 +269,10 @@ const nav = [
     z-index: 20;
   }
   .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--text); text-decoration: none; }
-  .brand-mark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--grad); color: #fff; box-shadow: 0 4px 14px var(--glow-1); }
-  .brand span:last-child { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; font-size: 1.05rem; }
+  .brand-mark { display: block; width: 36px; height: 36px; filter: drop-shadow(0 3px 8px rgb(37 99 235 / 0.35)); transition: transform 0.2s; }
+  .brand-mark img { display: block; width: 100%; height: 100%; }
+  .brand:hover .brand-mark { transform: rotate(-6deg) scale(1.06); }
+  .brand span:last-child { background: linear-gradient(135deg, #22d3ee, #2563eb 55%, #4f46e5); -webkit-background-clip: text; background-clip: text; color: transparent; font-size: 1.05rem; }
   .tabs { display: flex; gap: 4px; margin-left: 12px; }
   .tab { padding: 7px 14px; border-radius: 999px; color: var(--muted); text-decoration: none; font-weight: 500; }
   .tab:hover { background: var(--surface-2); color: var(--text); }
