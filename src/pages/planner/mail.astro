@@ -1,0 +1,354 @@
+---
+import PlannerLayout from '../../layouts/PlannerLayout.astro';
+---
+
+<PlannerLayout title="Mail" active="mail">
+  <div class="mail-head">
+    <div>
+      <h1>Mail</h1>
+      <p class="muted small" id="mail-sub">Your Gmail inbox. Meetings and appointments found in your emails go straight into your calendar.</p>
+    </div>
+    <div class="row gap-sm wrap">
+      <button class="btn" id="connect" type="button">Connect Gmail</button>
+      <button class="btn" id="refresh" type="button" hidden>Refresh</button>
+      <button class="btn btn-primary" id="scan" type="button" hidden>Find meetings</button>
+    </div>
+  </div>
+
+  <section class="card card-pad found" id="found" hidden>
+    <div class="row gap-sm">
+      <h2 class="grow">Found in your email</h2>
+      <button class="btn btn-ghost btn-sm" id="found-close" type="button">Hide</button>
+    </div>
+    <ul id="found-list"></ul>
+  </section>
+
+  <div class="setup card card-pad" id="setup" hidden>
+    <h2>Connect your Gmail</h2>
+    <p>To read your mail, the app needs a Google OAuth Client ID. It's free and takes about five minutes. The steps are on the <a href="/planner/settings/#gmail">Settings page</a>.</p>
+  </div>
+
+  <div class="mail-layout" id="mail-layout" hidden>
+    <section class="card list-pane">
+      <form class="search" id="search-form">
+        <input type="search" id="search" placeholder="Search mail (Gmail search works, e.g. from:boss)" aria-label="Search mail" />
+      </form>
+      <ul class="mail-list" id="mail-list"></ul>
+    </section>
+    <section class="card reader" id="reader">
+      <div class="reader-empty muted">Select an email to read it.</div>
+    </section>
+  </div>
+</PlannerLayout>
+
+<style>
+  .mail-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
+  .mail-head p { margin: 4px 0 0; max-width: 60ch; }
+  .mail-layout { display: grid; grid-template-columns: minmax(280px, 380px) minmax(0, 1fr); gap: 16px; height: calc(100vh - 220px); min-height: 480px; }
+  .list-pane { display: flex; flex-direction: column; overflow: hidden; }
+  .search { padding: 10px; border-bottom: 1px solid var(--border); }
+  .mail-list { list-style: none; margin: 0; padding: 0; overflow-y: auto; flex: 1; }
+  :global(.mail-item) { padding: 12px 14px; border-bottom: 1px solid var(--border); cursor: pointer; display: grid; gap: 2px; }
+  :global(.mail-item:hover) { background: var(--surface-2); }
+  :global(.mail-item.selected) { background: var(--accent-soft); }
+  :global(.mail-item .from) { display: flex; justify-content: space-between; gap: 8px; font-size: 0.85rem; color: var(--muted); }
+  :global(.mail-item .from span:first-child) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  :global(.mail-item .subj) { font-size: 0.92rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  :global(.mail-item .snip) { font-size: 0.8rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  :global(.mail-item.unread .subj), :global(.mail-item.unread .from span:first-child) { font-weight: 700; color: var(--text); }
+  :global(.mail-item .badge) { font-size: 0.7rem; }
+  :global(.mail-empty) { padding: 20px; color: var(--muted); }
+  .reader { overflow: hidden; display: flex; flex-direction: column; }
+  :global(.reader-empty) { margin: auto; }
+  :global(.reader-head) { padding: 18px 20px 14px; border-bottom: 1px solid var(--border); }
+  :global(.reader-head h2) { font-size: 1.2rem; margin-bottom: 6px; }
+  :global(.reader-head .meta) { font-size: 0.85rem; color: var(--muted); }
+  :global(.reader-actions) { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  :global(.reader iframe) { flex: 1; width: 100%; border: 0; background: #fff; }
+  :global(.reader pre) { flex: 1; margin: 0; padding: 20px; overflow: auto; white-space: pre-wrap; font: inherit; }
+  .found { margin-bottom: 16px; border-color: var(--accent); }
+  #found-list { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 8px; }
+  :global(.found-item) { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; background: var(--surface-2); flex-wrap: wrap; }
+  :global(.found-item .info) { flex: 1; min-width: 200px; }
+  :global(.found-item .what) { font-weight: 600; }
+  :global(.found-item .when) { font-size: 0.82rem; color: var(--muted); }
+  .setup { max-width: 640px; }
+  .setup p { margin-bottom: 0; }
+
+  @media (max-width: 820px) {
+    .mail-layout { grid-template-columns: 1fr; height: auto; }
+    .list-pane { max-height: 50vh; }
+    .reader { min-height: 60vh; }
+  }
+</style>
+
+<script>
+  import { connect, disconnect, getEmail, isConnected, listInbox, type EmailFull, type EmailSummary } from '../../planner/gmail';
+  import { alreadyInCalendar, findEventsInEmails, type FoundEvent } from '../../planner/ai';
+  import {
+    addEvent,
+    deleteEvent,
+    escapeHtml,
+    formatLongDate,
+    getScannedEmailIds,
+    getSettings,
+    markEmailsScanned,
+  } from '../../planner/store';
+  import { openAssistant, toast } from '../../planner/shell';
+
+  const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
+  const connectBtn = $<HTMLButtonElement>('connect');
+  const refreshBtn = $<HTMLButtonElement>('refresh');
+  const scanBtn = $<HTMLButtonElement>('scan');
+  const list = $('mail-list');
+  const reader = $('reader');
+
+  let inbox: EmailSummary[] = [];
+  let selected: string | null = null;
+  const fullCache = new Map<string, EmailFull>();
+
+  function shortFrom(from: string): string {
+    const m = from.match(/^"?([^"<]+)"?\s*</);
+    return (m?.[1] ?? from).trim();
+  }
+
+  function shortDate(date: string): string {
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return '';
+    const now = new Date();
+    return d.toDateString() === now.toDateString()
+      ? d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+      : d.toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+  }
+
+  function syncUi(): void {
+    const connected = isConnected();
+    const hasClientId = !!getSettings().googleClientId;
+    $('setup').hidden = hasClientId;
+    $('mail-layout').hidden = !connected;
+    connectBtn.hidden = !hasClientId;
+    connectBtn.textContent = connected ? 'Disconnect' : 'Connect Gmail';
+    refreshBtn.hidden = !connected;
+    scanBtn.hidden = !connected;
+  }
+
+  function renderList(): void {
+    if (!inbox.length) {
+      list.innerHTML = '<li class="mail-empty">No emails found.</li>';
+      return;
+    }
+    list.innerHTML = inbox
+      .map(
+        (m) => `<li class="mail-item ${m.unread ? 'unread' : ''} ${m.id === selected ? 'selected' : ''}" data-id="${m.id}" tabindex="0">
+          <div class="from"><span>${escapeHtml(shortFrom(m.from))}</span><span>${shortDate(m.date)}</span></div>
+          <div class="subj">${escapeHtml(m.subject)}</div>
+          <div class="snip">${escapeHtml(m.snippet)}</div>
+        </li>`,
+      )
+      .join('');
+  }
+
+  async function loadInbox(query = ''): Promise<void> {
+    list.innerHTML = '<li class="mail-empty">Loading your inbox…</li>';
+    try {
+      inbox = await listInbox(Math.max(5, Math.min(100, getSettings().emailScanCount || 25)), query);
+      renderList();
+    } catch (err) {
+      list.innerHTML = `<li class="mail-empty">${escapeHtml(err instanceof Error ? err.message : String(err))}</li>`;
+      syncUi();
+    }
+  }
+
+  async function fullEmail(id: string): Promise<EmailFull> {
+    const cached = fullCache.get(id);
+    if (cached) return cached;
+    const e = await getEmail(id);
+    fullCache.set(id, e);
+    return e;
+  }
+
+  async function openEmail(id: string): Promise<void> {
+    selected = id;
+    renderList();
+    reader.innerHTML = '<div class="reader-empty muted">Opening…</div>';
+    try {
+      const e = await fullEmail(id);
+      reader.innerHTML = `<div class="reader-head">
+          <h2>${escapeHtml(e.subject)}</h2>
+          <div class="meta">${escapeHtml(e.from)}<br/>${escapeHtml(e.date)}</div>
+          <div class="reader-actions">
+            <button class="btn btn-sm" type="button" id="scan-one">Add meetings from this email</button>
+            <button class="btn btn-sm" type="button" id="ask-one">Ask assistant about it</button>
+          </div>
+        </div>`;
+      if (e.html) {
+        // Shown in a locked-down frame: no scripts, no forms, links open in a new tab.
+        const frame = document.createElement('iframe');
+        frame.setAttribute('sandbox', 'allow-popups allow-popups-to-escape-sandbox');
+        frame.setAttribute('referrerpolicy', 'no-referrer');
+        frame.title = 'Email content';
+        frame.srcdoc = `<base target="_blank"><style>body{font-family:system-ui,sans-serif;margin:20px;color:#111;}img{max-width:100%;height:auto}</style>${e.html}`;
+        reader.appendChild(frame);
+      } else {
+        const pre = document.createElement('pre');
+        pre.textContent = e.text;
+        reader.appendChild(pre);
+      }
+      $('scan-one').addEventListener('click', () => void scan([e.id], true));
+      $('ask-one').addEventListener('click', () =>
+        openAssistant(`About the email "${e.subject}" from ${shortFrom(e.from)}: `),
+      );
+    } catch (err) {
+      reader.innerHTML = `<div class="reader-empty">${escapeHtml(err instanceof Error ? err.message : String(err))}</div>`;
+    }
+  }
+
+  /* ---------- finding meetings ---------- */
+  interface FoundRow {
+    found: FoundEvent;
+    eventId: string | null;
+    subject: string;
+  }
+  let foundRows: FoundRow[] = [];
+
+  function renderFound(): void {
+    $('found').hidden = foundRows.length === 0;
+    $('found-list').innerHTML = foundRows
+      .map(
+        (r, i) => `<li class="found-item t-${r.found.type}">
+          <span class="dot"></span>
+          <div class="info">
+            <div class="what">${escapeHtml(r.found.title)}</div>
+            <div class="when">${escapeHtml(formatLongDate(r.found.date))}${r.found.start ? ` · ${r.found.start}${r.found.end ? `–${r.found.end}` : ''}` : ''}${
+              r.found.location ? ` · ${escapeHtml(r.found.location)}` : ''
+            }<br/>From: ${escapeHtml(r.subject)}</div>
+          </div>
+          ${
+            r.eventId
+              ? `<span class="pill t-plan">In calendar</span><button class="btn btn-sm" data-undo="${i}" type="button">Undo</button>`
+              : `<button class="btn btn-primary btn-sm" data-add="${i}" type="button">Add to calendar</button>`
+          }
+        </li>`,
+      )
+      .join('');
+  }
+
+  $('found-list').addEventListener('click', (e) => {
+    const t = e.target as HTMLElement;
+    const add = t.closest<HTMLElement>('[data-add]');
+    const undo = t.closest<HTMLElement>('[data-undo]');
+    if (add) {
+      const row = foundRows[Number(add.dataset.add)];
+      if (row) row.eventId = addFound(row.found);
+      renderFound();
+      toast('Added to your calendar');
+    }
+    if (undo) {
+      const row = foundRows[Number(undo.dataset.undo)];
+      if (row?.eventId) deleteEvent(row.eventId);
+      if (row) row.eventId = null;
+      renderFound();
+    }
+  });
+  $('found-close').addEventListener('click', () => ($('found').hidden = true));
+
+  function addFound(f: FoundEvent): string {
+    return addEvent({
+      title: f.title,
+      type: f.type,
+      date: f.date,
+      start: f.start,
+      end: f.end,
+      location: f.location,
+      notes: f.notes,
+      source: 'email',
+      emailId: f.emailId,
+    }).id;
+  }
+
+  let scanning = false;
+  async function scan(ids: string[], force = false): Promise<void> {
+    if (scanning) return;
+    const settings = getSettings();
+    if (!settings.anthropicApiKey) {
+      if (force) toast('Add your Anthropic API key in Settings to find meetings automatically.', 5000);
+      return;
+    }
+    const done = getScannedEmailIds();
+    const todo = force ? ids : ids.filter((id) => !done.has(id));
+    if (!todo.length) {
+      if (force) toast('No new emails to check.');
+      return;
+    }
+    scanning = true;
+    scanBtn.disabled = true;
+    scanBtn.textContent = `Reading ${todo.length} email${todo.length > 1 ? 's' : ''}…`;
+    try {
+      const emails = await Promise.all(todo.map(fullEmail));
+      const found = await findEventsInEmails(emails);
+      markEmailsScanned(todo);
+      const fresh = found.filter((f) => !alreadyInCalendar(f));
+      const subjects = new Map(emails.map((e) => [e.id, e.subject]));
+      const rows: FoundRow[] = fresh.map((f) => ({
+        found: f,
+        eventId: settings.autoAddFromEmail ? addFound(f) : null,
+        subject: subjects.get(f.emailId) ?? '',
+      }));
+      foundRows = [...rows, ...foundRows];
+      renderFound();
+      if (rows.length) {
+        toast(
+          settings.autoAddFromEmail
+            ? `Added ${rows.length} event${rows.length > 1 ? 's' : ''} from your email`
+            : `Found ${rows.length} possible event${rows.length > 1 ? 's' : ''}`,
+        );
+      } else if (force) toast('No new meetings found.');
+    } catch (err) {
+      toast(err instanceof Error ? err.message : String(err), 6000);
+    } finally {
+      scanning = false;
+      scanBtn.disabled = false;
+      scanBtn.textContent = 'Find meetings';
+    }
+  }
+
+  /* ---------- wiring ---------- */
+  connectBtn.addEventListener('click', async () => {
+    if (isConnected()) {
+      disconnect();
+      inbox = [];
+      syncUi();
+      return;
+    }
+    try {
+      await connect();
+      syncUi();
+      await loadInbox();
+      void scan(inbox.map((m) => m.id));
+    } catch (err) {
+      toast(err instanceof Error ? err.message : String(err), 6000);
+    }
+  });
+  refreshBtn.addEventListener('click', async () => {
+    await loadInbox(($('search') as HTMLInputElement).value);
+    void scan(inbox.map((m) => m.id));
+  });
+  scanBtn.addEventListener('click', () => void scan(inbox.map((m) => m.id), true));
+  $('search-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    void loadInbox(($('search') as HTMLInputElement).value);
+  });
+  list.addEventListener('click', (e) => {
+    const li = (e.target as HTMLElement).closest<HTMLElement>('.mail-item');
+    if (li) void openEmail(li.dataset.id!);
+  });
+  list.addEventListener('keydown', (e) => {
+    const li = (e.target as HTMLElement).closest<HTMLElement>('.mail-item');
+    if (li && e.key === 'Enter') void openEmail(li.dataset.id!);
+  });
+
+  syncUi();
+  if (isConnected()) {
+    void loadInbox().then(() => scan(inbox.map((m) => m.id)));
+  }
+</script>

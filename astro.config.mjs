@@ -10,12 +10,16 @@ export default defineConfig({
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'sv', 'uk'],
-    routing: {
-      prefixDefaultLocale: true,
-    },
+    // "manual": every site page already lives under /en/, /sv/ or /uk/ and the
+    // root redirect is handled by src/pages/index.astro. Manual routing keeps
+    // that output identical while still allowing non-localised pages such as
+    // the private /planner/ app (Astro's automatic routing 404s those).
+    routing: 'manual',
   },
   integrations: [
     sitemap({
+      // Leave out the root redirect page and the private /planner/ app.
+      filter: (page) => page !== `${SITE}/` && !page.includes('/planner/'),
       i18n: {
         defaultLocale: 'en',
         locales: {

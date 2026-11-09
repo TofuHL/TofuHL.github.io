@@ -1,0 +1,488 @@
+---
+import PlannerLayout from '../../layouts/PlannerLayout.astro';
+import { EVENT_TYPES } from '../../planner/store';
+---
+
+<PlannerLayout title="Calendar" active="calendar">
+  <div class="cal-layout">
+    <section class="cal-main card">
+      <div class="cal-toolbar">
+        <div class="row gap-xs">
+          <button class="icon-btn" id="prev" type="button" aria-label="Previous">‹</button>
+          <button class="icon-btn" id="next" type="button" aria-label="Next">›</button>
+          <button class="btn btn-sm" id="today" type="button">Today</button>
+        </div>
+        <h1 id="cal-title" class="cal-title"></h1>
+        <div class="row gap-sm">
+          <div class="seg" role="group" aria-label="View">
+            <button type="button" data-view="month" class="active">Month</button>
+            <button type="button" data-view="week">Week</button>
+          </div>
+          <button class="btn btn-primary" id="add" type="button">+ Add</button>
+        </div>
+      </div>
+      <div id="cal-body"></div>
+    </section>
+
+    <aside class="cal-side">
+      <section class="card card-pad">
+        <h2>Today</h2>
+        <p class="muted small" id="today-label"></p>
+        <ul class="agenda" id="today-list"></ul>
+      </section>
+      <section class="card card-pad">
+        <h2>Coming up</h2>
+        <ul class="agenda" id="upcoming-list"></ul>
+      </section>
+      <section class="card card-pad">
+        <h2>Show</h2>
+        <div class="filters" id="filters">
+          {EVENT_TYPES.map((t) => (
+            <label class={`filter t-${t.value}`}>
+              <input type="checkbox" value={t.value} checked />
+              <span class="dot"></span>
+              {t.label}
+            </label>
+          ))}
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <dialog class="modal" id="event-modal">
+    <form method="dialog" id="event-form">
+      <div class="modal-body">
+        <h2 id="modal-title">Add to calendar</h2>
+        <div>
+          <label for="f-title">Title</label>
+          <input type="text" id="f-title" required placeholder="e.g. Morning shift, Dinner with Sam" />
+        </div>
+        <div class="grid-2">
+          <div>
+            <label for="f-type">Type</label>
+            <select id="f-type">
+              {EVENT_TYPES.map((t) => <option value={t.value}>{t.label}</option>)}
+            </select>
+          </div>
+          <div>
+            <label for="f-date">Date</label>
+            <input type="date" id="f-date" required />
+          </div>
+        </div>
+        <label class="row gap-xs check"><input type="checkbox" id="f-allday" /> All day</label>
+        <div class="grid-2" id="time-fields">
+          <div>
+            <label for="f-start">Starts</label>
+            <input type="time" id="f-start" />
+          </div>
+          <div>
+            <label for="f-end">Ends</label>
+            <input type="time" id="f-end" />
+          </div>
+        </div>
+        <div>
+          <label for="f-location">Location</label>
+          <input type="text" id="f-location" placeholder="Optional" />
+        </div>
+        <div>
+          <label for="f-notes">Notes</label>
+          <textarea id="f-notes" rows="2" placeholder="Optional"></textarea>
+        </div>
+        <div id="repeat-row">
+          <label for="f-repeat">Repeat</label>
+          <div class="grid-2">
+            <select id="f-repeat">
+              <option value="none">Doesn't repeat</option>
+              <option value="daily">Every day</option>
+              <option value="weekdays">Every weekday (Mon–Fri)</option>
+              <option value="weekly">Every week</option>
+            </select>
+            <div class="row gap-xs" id="repeat-count-wrap" hidden>
+              <span class="muted small">for</span>
+              <input type="number" id="f-repeat-count" min="1" max="52" value="4" />
+              <span class="muted small" id="repeat-unit">weeks</span>
+            </div>
+          </div>
+        </div>
+        <p class="muted small" id="f-source" hidden></p>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost btn-danger" type="button" id="delete-btn" hidden>Delete</button>
+        <span class="grow"></span>
+        <button class="btn" type="button" id="cancel-btn">Cancel</button>
+        <button class="btn btn-primary" type="submit">Save</button>
+      </div>
+    </form>
+  </dialog>
+</PlannerLayout>
+
+<style>
+  .cal-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
+  .cal-main { padding: 16px; }
+  .cal-side { display: grid; gap: 16px; }
+  .cal-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+  .cal-title { font-size: 1.35rem; flex: 1; text-align: center; min-width: 160px; }
+  .seg { display: inline-flex; padding: 3px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--border); }
+  .seg button { border: 0; background: transparent; color: var(--muted); font: inherit; font-weight: 550; padding: 5px 12px; border-radius: 7px; cursor: pointer; }
+  .seg button.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+
+  :global(.month) { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-top: 1px solid var(--border); border-left: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  :global(.dow) { padding: 8px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); background: var(--surface-2); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  :global(.day) { min-height: 112px; padding: 6px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); cursor: pointer; display: flex; flex-direction: column; gap: 3px; min-width: 0; transition: background 0.12s; }
+  :global(.day:hover) { background: var(--surface-2); }
+  :global(.day.other) { background: color-mix(in srgb, var(--surface-2) 55%, transparent); }
+  :global(.day.other .num) { color: var(--muted); }
+  :global(.day .num) { font-size: 0.8rem; font-weight: 600; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; }
+  :global(.day.is-today .num) { background: var(--accent); color: var(--on-accent); }
+  :global(.ev) { display: flex; align-items: center; gap: 5px; padding: 2px 6px; border-radius: 6px; font-size: 0.78rem; line-height: 1.35; color: var(--text); background: color-mix(in srgb, var(--t) 16%, transparent); border-left: 3px solid var(--t); cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-top: 0; border-right: 0; border-bottom: 0; font-family: inherit; text-align: left; width: 100%; }
+  :global(.ev:hover) { background: color-mix(in srgb, var(--t) 26%, transparent); }
+  :global(.ev .time) { color: var(--muted); font-variant-numeric: tabular-nums; }
+  :global(.more) { font-size: 0.75rem; color: var(--muted); padding-left: 6px; }
+
+  :global(.week) { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
+  :global(.wcol) { background: var(--surface-2); border-radius: 12px; padding: 8px; min-height: 360px; display: flex; flex-direction: column; gap: 6px; cursor: pointer; min-width: 0; }
+  :global(.wcol.is-today) { outline: 2px solid var(--accent); }
+  :global(.whead) { font-size: 0.8rem; color: var(--muted); font-weight: 600; padding: 2px 4px 6px; }
+  :global(.whead b) { display: block; font-size: 1.25rem; color: var(--text); }
+  :global(.wcard) { display: block; width: 100%; text-align: left; font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--t); border-radius: 9px; padding: 7px 8px; cursor: pointer; box-shadow: var(--shadow); }
+  :global(.wcard:hover) { border-color: var(--t); }
+  :global(.wcard .t) { font-weight: 600; font-size: 0.85rem; overflow-wrap: anywhere; }
+  :global(.wcard .s) { font-size: 0.75rem; color: var(--muted); }
+
+  .agenda { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
+  :global(.agenda li) { display: flex; gap: 10px; align-items: flex-start; padding: 8px; border-radius: 10px; cursor: pointer; }
+  :global(.agenda li:hover) { background: var(--surface-2); }
+  :global(.agenda .dot) { margin-top: 6px; }
+  :global(.agenda .when) { font-size: 0.78rem; color: var(--muted); }
+  :global(.agenda .what) { font-weight: 600; font-size: 0.9rem; }
+  :global(.agenda .empty) { color: var(--muted); cursor: default; padding: 0; font-size: 0.9rem; }
+  :global(.agenda .empty:hover) { background: none; }
+
+  .filters { display: grid; gap: 4px; margin-top: 10px; }
+  .filter { display: flex; align-items: center; gap: 8px; font-weight: 500; margin: 0; cursor: pointer; }
+  .check { font-weight: 500; margin: 0; }
+  .check input, .filter input { width: auto; }
+
+  @media (max-width: 980px) {
+    .cal-layout { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 720px) {
+    .cal-main { padding: 10px; }
+    :global(.day) { min-height: 64px; padding: 3px; }
+    :global(.ev) { font-size: 0; padding: 0; height: 6px; border-left-width: 0; background: var(--t); }
+    :global(.ev *) { display: none; }
+    :global(.week) { grid-template-columns: 1fr; }
+    :global(.wcol) { min-height: 0; }
+  }
+</style>
+
+<script>
+  import {
+    addDays,
+    addEvent,
+    deleteEvent,
+    escapeHtml,
+    EVENT_TYPES,
+    eventsBetween,
+    formatLongDate,
+    formatTimeRange,
+    getEvents,
+    parseISODate,
+    toISODate,
+    today,
+    updateEvent,
+    type EventType,
+    type PlannerEvent,
+  } from '../../planner/store';
+  import { toast } from '../../planner/shell';
+
+  type View = 'month' | 'week';
+  let view: View = 'month';
+  let cursor = today();
+  const hidden = new Set<string>();
+
+  const body = document.getElementById('cal-body')!;
+  const titleEl = document.getElementById('cal-title')!;
+
+  const typeLabel = (t: EventType) => EVENT_TYPES.find((x) => x.value === t)?.label ?? t;
+  const visible = (e: PlannerEvent) => !hidden.has(e.type);
+
+  function startOfWeek(date: string): string {
+    const d = parseISODate(date);
+    const offset = (d.getDay() + 6) % 7; // Monday first
+    return addDays(date, -offset);
+  }
+
+  function render(): void {
+    if (view === 'month') renderMonth();
+    else renderWeek();
+    renderSide();
+  }
+
+  function renderMonth(): void {
+    const c = parseISODate(cursor);
+    const first = toISODate(new Date(c.getFullYear(), c.getMonth(), 1));
+    const gridStart = startOfWeek(first);
+    titleEl.textContent = c.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+    const gridEnd = addDays(gridStart, 41);
+    const events = eventsBetween(gridStart, gridEnd).filter(visible);
+    const t = today();
+
+    const dows = Array.from({ length: 7 }, (_, i) =>
+      parseISODate(addDays(gridStart, i)).toLocaleDateString(undefined, { weekday: 'short' }),
+    );
+    let html = dows.map((d) => `<div class="dow">${d}</div>`).join('');
+    for (let i = 0; i < 42; i++) {
+      const date = addDays(gridStart, i);
+      const d = parseISODate(date);
+      const dayEvents = events.filter((e) => e.date === date);
+      const shown = dayEvents.slice(0, 3);
+      const classes = ['day', d.getMonth() !== c.getMonth() ? 'other' : '', date === t ? 'is-today' : ''].join(' ');
+      html += `<div class="${classes}" data-date="${date}" role="button" tabindex="0" aria-label="${escapeHtml(formatLongDate(date))}, ${dayEvents.length} events">
+        <span class="num">${d.getDate()}</span>
+        ${shown
+          .map(
+            (e) =>
+              `<button type="button" class="ev t-${e.type}" data-id="${e.id}" title="${escapeHtml(`${formatTimeRange(e)} ${e.title}`)}">${
+                e.start ? `<span class="time">${e.start}</span>` : ''
+              }<span>${escapeHtml(e.title)}</span></button>`,
+          )
+          .join('')}
+        ${dayEvents.length > 3 ? `<span class="more">+${dayEvents.length - 3} more</span>` : ''}
+      </div>`;
+    }
+    body.innerHTML = `<div class="month">${html}</div>`;
+  }
+
+  function renderWeek(): void {
+    const start = startOfWeek(cursor);
+    const end = addDays(start, 6);
+    const s = parseISODate(start);
+    const e = parseISODate(end);
+    titleEl.textContent = `${s.toLocaleDateString(undefined, { day: 'numeric', month: 'short' })} – ${e.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}`;
+    const events = eventsBetween(start, end).filter(visible);
+    const t = today();
+    let html = '';
+    for (let i = 0; i < 7; i++) {
+      const date = addDays(start, i);
+      const d = parseISODate(date);
+      const dayEvents = events.filter((ev) => ev.date === date);
+      html += `<div class="wcol ${date === t ? 'is-today' : ''}" data-date="${date}">
+        <div class="whead">${d.toLocaleDateString(undefined, { weekday: 'short' })}<b>${d.getDate()}</b></div>
+        ${dayEvents
+          .map(
+            (ev) => `<button type="button" class="wcard t-${ev.type}" data-id="${ev.id}">
+              <div class="t">${escapeHtml(ev.title)}</div>
+              <div class="s">${formatTimeRange(ev)}${ev.location ? ` · ${escapeHtml(ev.location)}` : ''}</div>
+            </button>`,
+          )
+          .join('')}
+      </div>`;
+    }
+    body.innerHTML = `<div class="week">${html}</div>`;
+  }
+
+  function agendaItem(e: PlannerEvent, withDate: boolean): string {
+    const when = withDate
+      ? `${parseISODate(e.date).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' })} · ${formatTimeRange(e)}`
+      : formatTimeRange(e);
+    return `<li class="t-${e.type}" data-id="${e.id}">
+      <span class="dot"></span>
+      <div><div class="what">${escapeHtml(e.title)}</div><div class="when">${when} · ${typeLabel(e.type)}</div></div>
+    </li>`;
+  }
+
+  function renderSide(): void {
+    const t = today();
+    document.getElementById('today-label')!.textContent = formatLongDate(t);
+    const todays = getEvents().filter((e) => e.date === t && visible(e));
+    document.getElementById('today-list')!.innerHTML = todays.length
+      ? todays.map((e) => agendaItem(e, false)).join('')
+      : '<li class="empty">Nothing planned today.</li>';
+    const upcoming = eventsBetween(addDays(t, 1), addDays(t, 30)).filter(visible).slice(0, 8);
+    document.getElementById('upcoming-list')!.innerHTML = upcoming.length
+      ? upcoming.map((e) => agendaItem(e, true)).join('')
+      : '<li class="empty">Nothing in the next 30 days.</li>';
+  }
+
+  /* ---------- modal ---------- */
+  const modal = document.getElementById('event-modal') as HTMLDialogElement;
+  const form = document.getElementById('event-form') as HTMLFormElement;
+  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const fTitle = $<HTMLInputElement>('f-title');
+  const fType = $<HTMLSelectElement>('f-type');
+  const fDate = $<HTMLInputElement>('f-date');
+  const fAllDay = $<HTMLInputElement>('f-allday');
+  const fStart = $<HTMLInputElement>('f-start');
+  const fEnd = $<HTMLInputElement>('f-end');
+  const fLocation = $<HTMLInputElement>('f-location');
+  const fNotes = $<HTMLTextAreaElement>('f-notes');
+  const fRepeat = $<HTMLSelectElement>('f-repeat');
+  const fRepeatCount = $<HTMLInputElement>('f-repeat-count');
+  let editingId: string | null = null;
+
+  function syncTimeFields(): void {
+    $('time-fields').hidden = fAllDay.checked;
+  }
+  function syncRepeat(): void {
+    const v = fRepeat.value;
+    $('repeat-count-wrap').hidden = v === 'none';
+    $('repeat-unit').textContent = v === 'weekly' ? 'weeks' : 'days';
+  }
+  fAllDay.addEventListener('change', syncTimeFields);
+  fRepeat.addEventListener('change', syncRepeat);
+
+  function openModal(opts: { date?: string; event?: PlannerEvent }): void {
+    const e = opts.event;
+    editingId = e?.id ?? null;
+    $('modal-title').textContent = e ? 'Edit event' : 'Add to calendar';
+    fTitle.value = e?.title ?? '';
+    fType.value = e?.type ?? 'shift';
+    fDate.value = e?.date ?? opts.date ?? today();
+    fAllDay.checked = e ? !e.start : false;
+    fStart.value = e?.start ?? '09:00';
+    fEnd.value = e?.end ?? '17:00';
+    fLocation.value = e?.location ?? '';
+    fNotes.value = e?.notes ?? '';
+    fRepeat.value = 'none';
+    $('repeat-row').hidden = !!e;
+    $('delete-btn').hidden = !e;
+    const src = $('f-source');
+    src.hidden = !e || e.source === 'manual';
+    if (e?.source === 'email') src.textContent = 'Added automatically from an email.';
+    if (e?.source === 'assistant') src.textContent = 'Added by your assistant.';
+    syncTimeFields();
+    syncRepeat();
+    modal.showModal();
+    fTitle.focus();
+  }
+
+  form.addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    if (!fTitle.value.trim() || !fDate.value) return;
+    const data = {
+      title: fTitle.value.trim(),
+      type: fType.value as EventType,
+      date: fDate.value,
+      start: fAllDay.checked ? '' : fStart.value,
+      end: fAllDay.checked ? '' : fEnd.value,
+      location: fLocation.value.trim(),
+      notes: fNotes.value.trim(),
+    };
+    if (editingId) {
+      updateEvent(editingId, data);
+      toast('Event updated');
+    } else {
+      const repeat = fRepeat.value;
+      const count = repeat === 'none' ? 1 : Math.max(1, Math.min(366, Number(fRepeatCount.value) || 1));
+      let added = 0;
+      let date = data.date;
+      let i = 0;
+      while (added < count && i < 800) {
+        const dow = parseISODate(date).getDay();
+        if (repeat !== 'weekdays' || (dow >= 1 && dow <= 5)) {
+          addEvent({ ...data, date, source: 'manual' });
+          added++;
+        }
+        date = addDays(date, repeat === 'weekly' ? 7 : 1);
+        i++;
+      }
+      toast(added > 1 ? `Added ${added} events` : 'Added to your calendar');
+    }
+    modal.close();
+    cursor = data.date;
+    render();
+  });
+
+  $('cancel-btn').addEventListener('click', () => modal.close());
+  $('delete-btn').addEventListener('click', () => {
+    if (editingId && confirm('Delete this event?')) {
+      deleteEvent(editingId);
+      modal.close();
+      toast('Event deleted');
+      render();
+    }
+  });
+
+  /* ---------- interactions ---------- */
+  function findEvent(id: string): PlannerEvent | undefined {
+    return getEvents().find((e) => e.id === id);
+  }
+
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const evEl = target.closest<HTMLElement>('[data-id]');
+    if (evEl && (body.contains(evEl) || evEl.closest('.agenda'))) {
+      const found = findEvent(evEl.dataset.id!);
+      if (found) openModal({ event: found });
+      return;
+    }
+    const dayEl = target.closest<HTMLElement>('[data-date]');
+    if (dayEl && body.contains(dayEl)) openModal({ date: dayEl.dataset.date });
+  });
+  body.addEventListener('keydown', (e) => {
+    const el = (e.target as HTMLElement).closest<HTMLElement>('.day');
+    if (el && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      openModal({ date: el.dataset.date });
+    }
+  });
+
+  $('prev').addEventListener('click', () => {
+    if (view === 'month') {
+      const c = parseISODate(cursor);
+      cursor = toISODate(new Date(c.getFullYear(), c.getMonth() - 1, 1));
+    } else cursor = addDays(cursor, -7);
+    render();
+  });
+  $('next').addEventListener('click', () => {
+    if (view === 'month') {
+      const c = parseISODate(cursor);
+      cursor = toISODate(new Date(c.getFullYear(), c.getMonth() + 1, 1));
+    } else cursor = addDays(cursor, 7);
+    render();
+  });
+  $('today').addEventListener('click', () => {
+    cursor = today();
+    render();
+  });
+  $('add').addEventListener('click', () => openModal({ date: cursor }));
+
+  document.querySelectorAll<HTMLButtonElement>('.seg button').forEach((b) =>
+    b.addEventListener('click', () => {
+      view = b.dataset.view as View;
+      document.querySelectorAll('.seg button').forEach((x) => x.classList.toggle('active', x === b));
+      try {
+        localStorage.setItem('planner.view', view);
+      } catch {
+        /* ignore */
+      }
+      render();
+    }),
+  );
+
+  document.querySelectorAll<HTMLInputElement>('#filters input').forEach((cb) =>
+    cb.addEventListener('change', () => {
+      if (cb.checked) hidden.delete(cb.value);
+      else hidden.add(cb.value);
+      render();
+    }),
+  );
+
+  // Re-render when the assistant or another tab changes the calendar.
+  window.addEventListener('planner:change', () => render());
+  window.addEventListener('storage', () => render());
+
+  try {
+    const saved = localStorage.getItem('planner.view');
+    if (saved === 'week' || saved === 'month') {
+      view = saved;
+      document.querySelectorAll<HTMLButtonElement>('.seg button').forEach((x) =>
+        x.classList.toggle('active', x.dataset.view === view),
+      );
+    }
+  } catch {
+    /* ignore */
+  }
+  render();
+</script>
