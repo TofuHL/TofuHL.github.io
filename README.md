@@ -246,3 +246,41 @@ repo: **Settings → Pages → Source → GitHub Actions**.
 The site is configured (`astro.config.mjs`) to deploy at the apex domain
 (`https://tofuhl.github.io`, no `/repo-name/` base path), matching a
 `<username>.github.io` repository.
+
+---
+
+## My Planner (`/planner/`)
+
+A private personal schedule app that lives on the same site at
+`https://tofuhl.github.io/planner/`. It is not linked from the donor site and
+is excluded from the sitemap and search engines.
+
+- **Calendar** (`/planner/`): month and week views, with work shifts, plans,
+  meetings and reminders in different colours. Add or edit events by hand,
+  including repeating shifts (daily, weekdays or weekly).
+- **Mail** (`/planner/mail/`): your Gmail inbox, with read-only access. New
+  emails are read by the AI, and any meetings or appointments it finds are added
+  to your calendar automatically. Each one has an Undo button.
+- **Assistant** (button in the top bar on every page): a chat assistant powered
+  by Claude. It reads your calendar, adds and changes events, searches your
+  email, and saves notes about you (shown in Settings) so its help gets more
+  personal over time.
+- **Settings** (`/planner/settings/`): light, dark or match-device theme, your
+  "About me" profile, API keys, and backup/restore.
+
+All data (events, settings, keys) is stored only in your browser's
+`localStorage`. Nothing is sent to this site's server. The Anthropic API key is
+sent only to `api.anthropic.com`, and the Gmail token only to Google.
+
+### One-time setup
+
+1. **AI:** create an API key at https://console.anthropic.com/settings/keys and
+   paste it into Settings → AI assistant.
+2. **Gmail:** create a Google OAuth Client ID (Web application) with the Gmail
+   API enabled and `https://tofuhl.github.io` as an authorised JavaScript
+   origin. Step-by-step instructions are on the Settings page. Paste the
+   Client ID into Settings → Gmail, then click **Connect Gmail** on the Mail page.
+
+Code: `src/pages/planner/` (pages), `src/layouts/PlannerLayout.astro` (shell,
+theme, assistant drawer), and `src/planner/` (`store.ts` data, `gmail.ts` Gmail,
+`ai.ts` Claude assistant and email scanning, `shell.ts` shared UI).

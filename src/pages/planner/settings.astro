@@ -1,0 +1,235 @@
+---
+import PlannerLayout from '../../layouts/PlannerLayout.astro';
+---
+
+<PlannerLayout title="Settings" active="settings">
+  <div class="settings">
+    <h1>Settings</h1>
+    <p class="muted">Everything here is saved only in this browser on this device.</p>
+
+    <section class="card card-pad">
+      <h2>Appearance</h2>
+      <div class="seg theme-seg" role="radiogroup" aria-label="Theme">
+        <button type="button" data-theme-choice="light" role="radio">☀️ Light</button>
+        <button type="button" data-theme-choice="dark" role="radio">🌙 Dark</button>
+        <button type="button" data-theme-choice="system" role="radio">💻 Match device</button>
+      </div>
+    </section>
+
+    <section class="card card-pad">
+      <h2>About you</h2>
+      <p class="muted small">Your assistant reads this so its help fits your life. The more you tell it, the better it gets.</p>
+      <div class="field">
+        <label for="s-name">Your name</label>
+        <input type="text" id="s-name" autocomplete="name" />
+      </div>
+      <div class="field">
+        <label for="s-about">About me</label>
+        <textarea id="s-about" rows="5" placeholder="e.g. I work at the café on Main St, usually 07:00–15:00 on weekdays. I study in the evenings. I like to keep Sundays free. My manager is Anna."></textarea>
+      </div>
+      <div class="field">
+        <label>What your assistant has learned</label>
+        <ul class="memory" id="memory"></ul>
+      </div>
+    </section>
+
+    <section class="card card-pad">
+      <h2>AI assistant</h2>
+      <p class="muted small">
+        The assistant runs on Claude. Get an API key at
+        <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>
+        (usage is billed to that account). The key is stored only in this browser and sent only to Anthropic.
+      </p>
+      <div class="field">
+        <label for="s-key">Anthropic API key</label>
+        <div class="row gap-xs">
+          <input type="password" id="s-key" autocomplete="off" placeholder="sk-ant-…" />
+          <button class="btn btn-sm" type="button" id="show-key">Show</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="s-model">Model</label>
+        <select id="s-model">
+          <option value="claude-opus-5-5">Claude Opus 5.5 (smartest)</option>
+          <option value="claude-sonnet-5-5">Claude Sonnet 5.5 (faster, cheaper)</option>
+          <option value="claude-haiku-5-5">Claude Haiku 5.5 (fastest, cheapest)</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="card card-pad" id="gmail">
+      <h2>Gmail</h2>
+      <p class="muted small">The app asks Google for <strong>read-only</strong> access. It can read your mail but can never send, delete or change anything.</p>
+      <div class="field">
+        <label for="s-client">Google OAuth Client ID</label>
+        <input type="text" id="s-client" placeholder="123456789-abc.apps.googleusercontent.com" autocomplete="off" />
+      </div>
+      <label class="row gap-xs check"><input type="checkbox" id="s-auto" /> Automatically add meetings found in emails to my calendar</label>
+      <div class="field">
+        <label for="s-count">Emails to load and check</label>
+        <input type="number" id="s-count" min="5" max="100" />
+      </div>
+      <details>
+        <summary>How to get a Client ID (about 5 minutes, free)</summary>
+        <ol class="steps">
+          <li>Go to <a href="https://console.cloud.google.com/projectcreate" target="_blank" rel="noopener">Google Cloud Console</a> and create a project (any name, e.g. "My Planner").</li>
+          <li>Open <a href="https://console.cloud.google.com/apis/library/gmail.googleapis.com" target="_blank" rel="noopener">Gmail API</a> and click <strong>Enable</strong>.</li>
+          <li>Open <a href="https://console.cloud.google.com/auth/overview" target="_blank" rel="noopener">Google Auth Platform</a> → <strong>Get started</strong>. Choose <strong>External</strong>, fill in the app name and your email.</li>
+          <li>Under <strong>Audience</strong>, add your own Gmail address as a <strong>Test user</strong>.</li>
+          <li>Under <strong>Data access</strong>, add the scope <code>.../auth/gmail.readonly</code>.</li>
+          <li>Under <strong>Clients</strong>, create a client of type <strong>Web application</strong>. In <strong>Authorized JavaScript origins</strong> add <code id="origin"></code> (and <code>http://localhost:4321</code> if you run it locally).</li>
+          <li>Copy the <strong>Client ID</strong> and paste it above.</li>
+        </ol>
+        <p class="muted small">Google will show a "this app isn't verified" screen when you sign in. That's expected for your own private app: click <strong>Continue</strong>.</p>
+      </details>
+    </section>
+
+    <section class="card card-pad">
+      <h2>Your data</h2>
+      <p class="muted small">Download a backup of your calendar, or move it to another device.</p>
+      <div class="row gap-sm wrap">
+        <button class="btn" type="button" id="export">Download backup</button>
+        <label class="btn file-btn">Restore backup<input type="file" id="import" accept="application/json" hidden /></label>
+        <button class="btn btn-danger" type="button" id="wipe">Delete everything</button>
+      </div>
+    </section>
+
+    <div class="save-bar">
+      <button class="btn btn-primary" type="button" id="save">Save settings</button>
+    </div>
+  </div>
+</PlannerLayout>
+
+<style>
+  .settings { max-width: 720px; margin: 0 auto; display: grid; gap: 16px; }
+  .settings > p { margin: -8px 0 0; }
+  .settings section h2 { margin-bottom: 6px; }
+  .field { margin-top: 14px; }
+  .check { font-weight: 500; margin-top: 14px; }
+  .check input { width: auto; }
+  .seg { display: inline-flex; padding: 3px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--border); margin-top: 8px; flex-wrap: wrap; }
+  .seg button { border: 0; background: transparent; color: var(--muted); font: inherit; font-weight: 550; padding: 7px 14px; border-radius: 7px; cursor: pointer; }
+  .seg button.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+  details { margin-top: 16px; }
+  summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+  .steps { padding-left: 20px; display: grid; gap: 6px; margin: 12px 0; }
+  code { background: var(--surface-2); padding: 1px 6px; border-radius: 6px; font-size: 0.85em; overflow-wrap: anywhere; }
+  .memory { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+  :global(.memory li) { display: flex; gap: 8px; align-items: center; padding: 7px 10px; border-radius: 9px; background: var(--surface-2); font-size: 0.9rem; }
+  :global(.memory li span) { flex: 1; }
+  :global(.memory .empty) { background: none; padding: 0; color: var(--muted); }
+  .file-btn { margin: 0; }
+  .save-bar { position: sticky; bottom: 16px; display: flex; justify-content: flex-end; }
+  .save-bar .btn { box-shadow: var(--shadow-lg); padding: 11px 22px; }
+</style>
+
+<script>
+  import { escapeHtml, exportAll, getMemory, getSettings, importAll, saveSettings, setMemory } from '../../planner/store';
+  import { getThemePref, setTheme, toast } from '../../planner/shell';
+  import { clearConversation } from '../../planner/ai';
+
+  const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
+  const s = getSettings();
+  $<HTMLInputElement>('s-name').value = s.name;
+  $<HTMLTextAreaElement>('s-about').value = s.aboutMe;
+  $<HTMLInputElement>('s-key').value = s.anthropicApiKey;
+  $<HTMLSelectElement>('s-model').value = s.model;
+  $<HTMLInputElement>('s-client').value = s.googleClientId;
+  $<HTMLInputElement>('s-auto').checked = s.autoAddFromEmail;
+  $<HTMLInputElement>('s-count').value = String(s.emailScanCount);
+  $('origin').textContent = window.location.origin;
+
+  /* theme */
+  function syncTheme(): void {
+    const pref = getThemePref();
+    document.querySelectorAll<HTMLButtonElement>('[data-theme-choice]').forEach((b) => {
+      const on = b.dataset.themeChoice === pref;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-checked', String(on));
+    });
+  }
+  document.querySelectorAll<HTMLButtonElement>('[data-theme-choice]').forEach((b) =>
+    b.addEventListener('click', () => {
+      setTheme(b.dataset.themeChoice as 'light' | 'dark' | 'system');
+      syncTheme();
+    }),
+  );
+  window.addEventListener('planner:theme', syncTheme);
+  syncTheme();
+
+  /* memory */
+  function renderMemory(): void {
+    const notes = getMemory();
+    $('memory').innerHTML = notes.length
+      ? notes
+          .map(
+            (n, i) =>
+              `<li><span>${escapeHtml(n)}</span><button class="btn btn-ghost btn-sm" type="button" data-forget="${i}" aria-label="Forget this">Forget</button></li>`,
+          )
+          .join('')
+      : '<li class="empty small">Nothing yet. Chat with your assistant and it will remember useful things here.</li>';
+  }
+  $('memory').addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLElement>('[data-forget]');
+    if (!b) return;
+    const notes = getMemory();
+    notes.splice(Number(b.dataset.forget), 1);
+    setMemory(notes);
+    renderMemory();
+  });
+  renderMemory();
+
+  $('show-key').addEventListener('click', () => {
+    const k = $<HTMLInputElement>('s-key');
+    k.type = k.type === 'password' ? 'text' : 'password';
+    $('show-key').textContent = k.type === 'password' ? 'Show' : 'Hide';
+  });
+
+  $('save').addEventListener('click', () => {
+    saveSettings({
+      name: $<HTMLInputElement>('s-name').value.trim(),
+      aboutMe: $<HTMLTextAreaElement>('s-about').value.trim(),
+      anthropicApiKey: $<HTMLInputElement>('s-key').value.trim(),
+      model: $<HTMLSelectElement>('s-model').value,
+      googleClientId: $<HTMLInputElement>('s-client').value.trim(),
+      autoAddFromEmail: $<HTMLInputElement>('s-auto').checked,
+      emailScanCount: Math.max(5, Math.min(100, Number($<HTMLInputElement>('s-count').value) || 25)),
+    });
+    toast('Settings saved');
+  });
+
+  $('export').addEventListener('click', () => {
+    const blob = new Blob([exportAll()], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `planner-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  $<HTMLInputElement>('import').addEventListener('change', async (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    try {
+      importAll(await file.text());
+      renderMemory();
+      toast('Backup restored');
+    } catch {
+      toast('That file is not a valid backup.');
+    }
+  });
+
+  $('wipe').addEventListener('click', () => {
+    if (!confirm('Delete all events, settings, assistant notes and chat history from this browser?')) return;
+    try {
+      Object.keys(localStorage)
+        .filter((k) => k.startsWith('planner.'))
+        .forEach((k) => localStorage.removeItem(k));
+      sessionStorage.removeItem('planner.gmailToken');
+    } catch {
+      /* ignore */
+    }
+    clearConversation();
+    location.reload();
+  });
+</script>
