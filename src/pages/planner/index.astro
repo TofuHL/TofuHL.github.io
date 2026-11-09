@@ -122,30 +122,33 @@ import { EVENT_TYPES } from '../../planner/store';
   .cal-side { display: grid; gap: 16px; }
   .cal-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
   .cal-title { font-size: 1.35rem; flex: 1; text-align: center; min-width: 160px; }
-  .seg { display: inline-flex; padding: 3px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--border); }
+  .seg { display: inline-flex; padding: 3px; border-radius: 10px; background: color-mix(in srgb, var(--surface-2) 70%, transparent); border: 1px solid var(--border); }
   .seg button { border: 0; background: transparent; color: var(--muted); font: inherit; font-weight: 550; padding: 5px 12px; border-radius: 7px; cursor: pointer; }
   .seg button.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
 
   :global(.month) { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-top: 1px solid var(--border); border-left: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-  :global(.dow) { padding: 8px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); background: var(--surface-2); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  :global(.dow) { padding: 8px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); background: color-mix(in srgb, var(--surface-2) 70%, transparent); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
   :global(.day) { min-height: 112px; padding: 6px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); cursor: pointer; display: flex; flex-direction: column; gap: 3px; min-width: 0; transition: background 0.12s; }
-  :global(.day:hover) { background: var(--surface-2); }
-  :global(.day.other) { background: color-mix(in srgb, var(--surface-2) 55%, transparent); }
+  :global(.day:hover) { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+  :global(.day.other) { background: color-mix(in srgb, var(--surface-2) 40%, transparent); }
   :global(.day.other .num) { color: var(--muted); }
   :global(.day .num) { font-size: 0.8rem; font-weight: 600; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; }
-  :global(.day.is-today .num) { background: var(--accent); color: var(--on-accent); }
+  :global(.day.is-today .num) { background: var(--grad); color: #fff; box-shadow: 0 3px 10px var(--glow-1); }
+  :global(.day.is-today) { background: color-mix(in srgb, var(--accent) 7%, transparent); }
   :global(.ev) { display: flex; align-items: center; gap: 5px; padding: 2px 6px; border-radius: 6px; font-size: 0.78rem; line-height: 1.35; color: var(--text); background: color-mix(in srgb, var(--t) 16%, transparent); border-left: 3px solid var(--t); cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-top: 0; border-right: 0; border-bottom: 0; font-family: inherit; text-align: left; width: 100%; }
-  :global(.ev:hover) { background: color-mix(in srgb, var(--t) 26%, transparent); }
+  :global(.ev) { transition: background 0.15s, transform 0.15s; }
+  :global(.ev:hover) { background: color-mix(in srgb, var(--t) 26%, transparent); transform: translateX(2px); }
   :global(.ev .time) { color: var(--muted); font-variant-numeric: tabular-nums; }
   :global(.more) { font-size: 0.75rem; color: var(--muted); padding-left: 6px; }
 
   :global(.week) { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
-  :global(.wcol) { background: var(--surface-2); border-radius: 12px; padding: 8px; min-height: 360px; display: flex; flex-direction: column; gap: 6px; cursor: pointer; min-width: 0; }
+  :global(.wcol) { background: color-mix(in srgb, var(--surface-2) 55%, transparent); border-radius: 12px; padding: 8px; min-height: 360px; display: flex; flex-direction: column; gap: 6px; cursor: pointer; min-width: 0; }
   :global(.wcol.is-today) { outline: 2px solid var(--accent); }
   :global(.whead) { font-size: 0.8rem; color: var(--muted); font-weight: 600; padding: 2px 4px 6px; }
   :global(.whead b) { display: block; font-size: 1.25rem; color: var(--text); }
   :global(.wcard) { display: block; width: 100%; text-align: left; font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--t); border-radius: 9px; padding: 7px 8px; cursor: pointer; box-shadow: var(--shadow); }
-  :global(.wcard:hover) { border-color: var(--t); }
+  :global(.wcard) { transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s; }
+  :global(.wcard:hover) { border-color: var(--t); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
   :global(.wcard .t) { font-weight: 600; font-size: 0.85rem; overflow-wrap: anywhere; }
   :global(.wcard .s) { font-size: 0.75rem; color: var(--muted); }
 
